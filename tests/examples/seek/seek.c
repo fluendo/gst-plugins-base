@@ -1866,7 +1866,6 @@ bus_sync_handler (GstBus * bus, GstMessage * message, SeekApp * app)
     g_assert (app->embed_xid != 0);
 
     gst_x_overlay_set_window_handle (GST_X_OVERLAY (element), app->embed_xid);
-    gst_x_overlay_handle_events (GST_X_OVERLAY (element), FALSE);
 
     find_interface_elements (app);
   }
@@ -2814,7 +2813,6 @@ main (int argc, char **argv)
   if (app.pipeline_type == 0) {
     gst_x_overlay_set_window_handle (GST_X_OVERLAY (app.pipeline),
         app.embed_xid);
-    gst_x_overlay_handle_events (GST_X_OVERLAY (app.pipeline), FALSE);
   }
 #endif
 
