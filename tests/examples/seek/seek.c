@@ -2154,17 +2154,8 @@ print_usage (int argc, char **argv)
 static void
 create_ui (SeekApp * app)
 {
-  GtkWidget *hbox, *vbox, *panel, *expander, *pb2vbox, *boxes,
-      *flagtable, *boxes2, *seek, *step, *navigation, *colorbalance = NULL;
-  GtkWidget *play_button, *pause_button, *stop_button, *shot_button;
-  GtkWidget *accurate_checkbox, *key_checkbox, *loop_checkbox, *flush_checkbox;
-  GtkWidget *scrub_checkbox, *play_scrub_checkbox;
-  GtkWidget *rate_label, *volume_label;
-  GtkWidget *skip_checkbox, *rate_spinbutton, *step_button, *shuttle_checkbox;
-  GtkWidget *soft_volume_checkbox, *native_audio_checkbox,
-      *native_video_checkbox;
-  GtkWidget *download_checkbox, *buffering_checkbox, *deinterlace_checkbox;
-  GtkWidget *soft_colorbalance_checkbox;
+  GtkWidget *hbox, *vbox, *seek, *playbin, *step, *navigation, *colorbalance;
+  GtkWidget *play_button, *pause_button, *stop_button;
   GtkAdjustment *adjustment;
 
   /* initialize gui elements ... */
@@ -2204,6 +2195,12 @@ create_ui (SeekApp * app)
 
   /* seek expander */
   {
+    GtkWidget *accurate_checkbox, *key_checkbox, *loop_checkbox,
+        *flush_checkbox;
+    GtkWidget *scrub_checkbox, *play_scrub_checkbox, *rate_label;
+    GtkWidget *skip_checkbox, *rate_spinbutton;
+    GtkWidget *flagtable;
+
     seek = gtk_expander_new ("seek options");
     flagtable = gtk_grid_new ();
     gtk_grid_set_row_spacing (GTK_GRID (flagtable), 2);
@@ -2242,6 +2239,23 @@ create_ui (SeekApp * app)
 
     gtk_spin_button_set_value (GTK_SPIN_BUTTON (rate_spinbutton), app->rate);
 
+    g_signal_connect (G_OBJECT (accurate_checkbox), "toggled",
+        G_CALLBACK (accurate_toggle_cb), app);
+    g_signal_connect (G_OBJECT (key_checkbox), "toggled",
+        G_CALLBACK (key_toggle_cb), app);
+    g_signal_connect (G_OBJECT (loop_checkbox), "toggled",
+        G_CALLBACK (loop_toggle_cb), app);
+    g_signal_connect (G_OBJECT (flush_checkbox), "toggled",
+        G_CALLBACK (flush_toggle_cb), app);
+    g_signal_connect (G_OBJECT (scrub_checkbox), "toggled",
+        G_CALLBACK (scrub_toggle_cb), app);
+    g_signal_connect (G_OBJECT (play_scrub_checkbox), "toggled",
+        G_CALLBACK (play_scrub_toggle_cb), app);
+    g_signal_connect (G_OBJECT (skip_checkbox), "toggled",
+        G_CALLBACK (skip_toggle_cb), app);
+    g_signal_connect (G_OBJECT (rate_spinbutton), "value-changed",
+        G_CALLBACK (rate_spinbutton_changed_cb), app);
+
     gtk_grid_attach (GTK_GRID (flagtable), accurate_checkbox, 0, 0, 1, 1);
     gtk_grid_attach (GTK_GRID (flagtable), flush_checkbox, 1, 0, 1, 1);
     gtk_grid_attach (GTK_GRID (flagtable), loop_checkbox, 2, 0, 1, 1);
@@ -2257,6 +2271,7 @@ create_ui (SeekApp * app)
   /* step expander */
   {
     GtkWidget *hbox;
+    GtkWidget *step_button, *shuttle_checkbox;
 
     step = gtk_expander_new ("step options");
     hbox = gtk_hbox_new (FALSE, 0);
@@ -2310,7 +2325,7 @@ create_ui (SeekApp * app)
 
     gtk_box_pack_start (GTK_BOX (hbox), app->shuttle_scale, TRUE, TRUE, 2);
 
-    gtk_container_add (GTK_CONTAINER (seek), flagtable);
+    gtk_container_add (GTK_CONTAINER (step), hbox);
   }
 
   /* navigation command expander */
@@ -2523,6 +2538,14 @@ create_ui (SeekApp * app)
       app);
 
   if (app->pipeline_type == 0) {
+    GtkWidget *pb2vbox, *boxes, *boxes2, *panel;
+    GtkWidget *volume_label, *shot_button;
+    GtkWidget *soft_volume_checkbox, *native_audio_checkbox,
+        *native_video_checkbox;
+    GtkWidget *download_checkbox, *buffering_checkbox, *deinterlace_checkbox;
+    GtkWidget *soft_colorbalance_checkbox;
+
+    playbin = gtk_expander_new ("playbin2 options");
     /* the playbin2 panel controls for the video/audio/subtitle tracks */
     panel = gtk_hbox_new (FALSE, 0);
     app->video_combo = gtk_combo_box_text_new ();
@@ -2641,8 +2664,14 @@ create_ui (SeekApp * app)
 
     /* fill the vis combo box and the array of factories */
     init_visualization_features (app);
+
+    pb2vbox = gtk_vbox_new (FALSE, 0);
+    gtk_box_pack_start (GTK_BOX (pb2vbox), panel, FALSE, FALSE, 2);
+    gtk_box_pack_start (GTK_BOX (pb2vbox), boxes, FALSE, FALSE, 2);
+    gtk_box_pack_start (GTK_BOX (pb2vbox), boxes2, FALSE, FALSE, 2);
+    gtk_container_add (GTK_CONTAINER (playbin), pb2vbox);
   } else {
-    panel = boxes = boxes2 = NULL;
+    playbin = NULL;
   }
 
   /* do the packing stuff ... */
@@ -2658,15 +2687,8 @@ create_ui (SeekApp * app)
   gtk_box_pack_start (GTK_BOX (hbox), stop_button, FALSE, FALSE, 2);
 
   gtk_box_pack_start (GTK_BOX (vbox), seek, FALSE, FALSE, 2);
-  if (panel && boxes && boxes2) {
-    expander = gtk_expander_new ("playbin2 options");
-    pb2vbox = gtk_vbox_new (FALSE, 0);
-    gtk_box_pack_start (GTK_BOX (pb2vbox), panel, FALSE, FALSE, 2);
-    gtk_box_pack_start (GTK_BOX (pb2vbox), boxes, FALSE, FALSE, 2);
-    gtk_box_pack_start (GTK_BOX (pb2vbox), boxes2, FALSE, FALSE, 2);
-    gtk_container_add (GTK_CONTAINER (expander), pb2vbox);
-    gtk_box_pack_start (GTK_BOX (vbox), expander, FALSE, FALSE, 2);
-  }
+  if (playbin)
+    gtk_box_pack_start (GTK_BOX (vbox), playbin, FALSE, FALSE, 2);
   gtk_box_pack_start (GTK_BOX (vbox), step, FALSE, FALSE, 2);
   gtk_box_pack_start (GTK_BOX (vbox), navigation, FALSE, FALSE, 2);
   gtk_box_pack_start (GTK_BOX (vbox), colorbalance, FALSE, FALSE, 2);
@@ -2681,22 +2703,6 @@ create_ui (SeekApp * app)
       app);
   g_signal_connect (G_OBJECT (stop_button), "clicked", G_CALLBACK (stop_cb),
       app);
-  g_signal_connect (G_OBJECT (accurate_checkbox), "toggled",
-      G_CALLBACK (accurate_toggle_cb), app);
-  g_signal_connect (G_OBJECT (key_checkbox), "toggled",
-      G_CALLBACK (key_toggle_cb), app);
-  g_signal_connect (G_OBJECT (loop_checkbox), "toggled",
-      G_CALLBACK (loop_toggle_cb), app);
-  g_signal_connect (G_OBJECT (flush_checkbox), "toggled",
-      G_CALLBACK (flush_toggle_cb), app);
-  g_signal_connect (G_OBJECT (scrub_checkbox), "toggled",
-      G_CALLBACK (scrub_toggle_cb), app);
-  g_signal_connect (G_OBJECT (play_scrub_checkbox), "toggled",
-      G_CALLBACK (play_scrub_toggle_cb), app);
-  g_signal_connect (G_OBJECT (skip_checkbox), "toggled",
-      G_CALLBACK (skip_toggle_cb), app);
-  g_signal_connect (G_OBJECT (rate_spinbutton), "value-changed",
-      G_CALLBACK (rate_spinbutton_changed_cb), app);
 
   g_signal_connect (G_OBJECT (app->window), "delete-event",
       G_CALLBACK (delete_event_cb), app);
