@@ -23,7 +23,9 @@ libgstalsa_la_LIBADD = \
 	$(ALSA_LIBS)
 
 libgstalsa_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
+if !GST_PLUGIN_BUILD_STATIC
 libgstalsa_la_LIBTOOLFLAGS = --tag=disable-static
+endif
 
 noinst_HEADERS = \
 	gstalsa.h \

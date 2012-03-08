@@ -26,7 +26,9 @@ libgstaudioresample_la_LIBADD = \
 	$(LIBM)
 
 libgstaudioresample_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
+if !GST_PLUGIN_BUILD_STATIC
 libgstaudioresample_la_LIBTOOLFLAGS = --tag=disable-static
+endif
 
 noinst_HEADERS = \
 	arch.h \

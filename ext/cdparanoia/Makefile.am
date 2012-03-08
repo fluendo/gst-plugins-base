@@ -12,6 +12,8 @@ libgstcdparanoia_la_LIBADD = \
 	$(GST_LIBS) \
 	$(CDPARANOIA_LIBS)
 libgstcdparanoia_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
+if !GST_PLUGIN_BUILD_STATIC
 libgstcdparanoia_la_LIBTOOLFLAGS = --tag=disable-static
+endif
 
 noinst_HEADERS = gstcdparanoiasrc.h

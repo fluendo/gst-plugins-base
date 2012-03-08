@@ -29,7 +29,9 @@ libgstvideo4linux_la_LIBADD = \
 	$(GST_BASE_LIBS) $(GST_LIBS) $(xv_libs) \
 	$(GUDEV_LIBS)
 libgstvideo4linux_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
+if !GST_PLUGIN_BUILD_STATIC
 libgstvideo4linux_la_LIBTOOLFLAGS = --tag=disable-static
+endif
 
 noinst_HEADERS = gstv4lelement.h v4l_calls.h \
 		gstv4lsrc.h v4lsrc_calls.h \

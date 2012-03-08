@@ -20,7 +20,9 @@ libgstvorbis_la_LIBADD = \
 	$(GST_LIBS) \
 	$(VORBIS_LIBS) $(VORBISENC_LIBS)
 libgstvorbis_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
+if !GST_PLUGIN_BUILD_STATIC
 libgstvorbis_la_LIBTOOLFLAGS = --tag=disable-static
+endif
 endif
 
 if USE_IVORBIS
@@ -36,7 +38,9 @@ libgstivorbisdec_la_LIBADD = \
 	$(top_builddir)/gst-libs/gst/audio/libgstaudio-@GST_MAJORMINOR@.la \
 	$(GST_LIBS) $(IVORBIS_LIBS)
 libgstivorbisdec_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
+if !GST_PLUGIN_BUILD_STATIC
 libgstivorbisdec_la_LIBTOOLFLAGS = --tag=disable-static
+endif
 endif
 
 noinst_HEADERS = gstvorbisenc.h \

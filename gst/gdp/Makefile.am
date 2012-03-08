@@ -8,7 +8,9 @@ libgstgdp_la_SOURCES = \
 libgstgdp_la_CFLAGS = $(GST_BASE_CFLAGS) $(GST_CFLAGS)
 libgstgdp_la_LIBADD = $(GST_BASE_LIBS) $(GST_GDP_LIBS)
 libgstgdp_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
+if !GST_PLUGIN_BUILD_STATIC
 libgstgdp_la_LIBTOOLFLAGS = --tag=disable-static
+endif
 
 noinst_HEADERS =			\
 		 gstgdppay.h		\

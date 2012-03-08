@@ -20,7 +20,9 @@ libgstencodebin_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
 libgstencodebin_la_LIBADD = \
 	$(top_builddir)/gst-libs/gst/pbutils/libgstpbutils-@GST_MAJORMINOR@.la \
 	$(GST_LIBS)
+if !GST_PLUGIN_BUILD_STATIC
 libgstencodebin_la_LIBTOOLFLAGS = --tag=disable-static
+endif
 
 noinst_HEADERS = 		\
 	gstencodebin.h		\

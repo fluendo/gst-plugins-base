@@ -951,8 +951,8 @@ plugin_init (GstPlugin * plugin)
       GST_TYPE_VIDEO_TEST_SRC);
 }
 
-GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
+GST_PLUGIN_DEFINE2 (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "videotestsrc",
+    videotestsrc,
     "Creates a test video stream",
     plugin_init, VERSION, GST_LICENSE, GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

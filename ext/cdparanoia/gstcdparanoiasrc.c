@@ -532,9 +532,9 @@ plugin_init (GstPlugin * plugin)
   return TRUE;
 }
 
-GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
+GST_PLUGIN_DEFINE2 (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "cdparanoia",
+    cdparanoia,
     "Read audio from CD in paranoid mode",
     plugin_init, GST_PLUGINS_BASE_VERSION, "LGPL", GST_PACKAGE_NAME,
     GST_PACKAGE_ORIGIN)

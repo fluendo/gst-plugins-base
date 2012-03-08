@@ -33,7 +33,9 @@ libgstplaybin_la_LIBADD = \
 	$(top_builddir)/gst-libs/gst/interfaces/libgstinterfaces-@GST_MAJORMINOR@.la \
 	$(top_builddir)/gst-libs/gst/video/libgstvideo-@GST_MAJORMINOR@.la \
 	$(GST_LIBS)
+if !GST_PLUGIN_BUILD_STATIC
 libgstplaybin_la_LIBTOOLFLAGS = --tag=disable-static
+endif
 
 libgstdecodebin_la_SOURCES = gstdecodebin.c
 nodist_libgstdecodebin_la_SOURCES = $(built_sources)
@@ -42,7 +44,9 @@ libgstdecodebin_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
 libgstdecodebin_la_LIBADD = \
 	$(top_builddir)/gst-libs/gst/pbutils/libgstpbutils-@GST_MAJORMINOR@.la \
 	$(GST_LIBS)
+if !GST_PLUGIN_BUILD_STATIC
 libgstdecodebin_la_LIBTOOLFLAGS = --tag=disable-static
+endif
 
 libgstdecodebin2_la_SOURCES = gstdecodebin2.c gsturidecodebin.c gstplay-enum.c
 nodist_libgstdecodebin2_la_SOURCES = $(built_sources)
@@ -51,7 +55,9 @@ libgstdecodebin2_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
 libgstdecodebin2_la_LIBADD = \
 	$(top_builddir)/gst-libs/gst/pbutils/libgstpbutils-@GST_MAJORMINOR@.la \
 	$(GST_LIBS)
+if !GST_PLUGIN_BUILD_STATIC
 libgstdecodebin2_la_LIBTOOLFLAGS = --tag=disable-static
+endif
 
 noinst_HEADERS = \
 	gstplayback.h \

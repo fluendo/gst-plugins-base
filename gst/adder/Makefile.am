@@ -11,7 +11,9 @@ libgstadder_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
 libgstadder_la_LIBADD =  \
 	         $(top_builddir)/gst-libs/gst/audio/libgstaudio-@GST_MAJORMINOR@.la \
 		 $(GST_BASE_LIBS) $(GST_LIBS) $(ORC_LIBS)
+if !GST_PLUGIN_BUILD_STATIC
 libgstadder_la_LIBTOOLFLAGS = --tag=disable-static
+endif
 
 noinst_HEADERS = gstadder.h
 

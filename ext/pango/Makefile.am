@@ -25,5 +25,7 @@ libgstpango_la_LIBADD = \
 	$(GST_LIBS) \
 	$(PANGO_LIBS)
 libgstpango_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
+if !GST_PLUGIN_BUILD_STATIC
 libgstpango_la_LIBTOOLFLAGS = --tag=disable-static
+endif
 

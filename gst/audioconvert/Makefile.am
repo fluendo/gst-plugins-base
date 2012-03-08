@@ -16,7 +16,9 @@ libgstaudioconvert_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
 libgstaudioconvert_la_LIBADD = \
 	$(top_builddir)/gst-libs/gst/audio/libgstaudio-@GST_MAJORMINOR@.la \
 	$(GST_BASE_LIBS) $(GST_LIBS) $(ORC_LIBS) $(LIBM)
+if !GST_PLUGIN_BUILD_STATIC
 libgstaudioconvert_la_LIBTOOLFLAGS = --tag=disable-static
+endif
 
 noinst_HEADERS = \
 	gstaudioconvert.h \

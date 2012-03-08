@@ -1288,8 +1288,8 @@ plugin_init (GstPlugin * plugin)
       GST_TYPE_VIDEO_RATE);
 }
 
-GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
+GST_PLUGIN_DEFINE2 (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "videorate",
+    videorate,
     "Adjusts video frames",
     plugin_init, VERSION, GST_LICENSE, GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

@@ -14,7 +14,9 @@ libgstvolume_la_LIBADD = \
 	$(GST_CONTROLLER_LIBS) \
 	$(GST_LIBS) \
 	$(ORC_LIBS)
+if !GST_PLUGIN_BUILD_STATIC
 libgstvolume_la_LIBTOOLFLAGS = --tag=disable-static
+endif
 
 noinst_HEADERS = gstvolume.h
 
