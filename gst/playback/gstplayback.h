@@ -24,7 +24,6 @@
 #include <gst/gst.h>
 
 gboolean gst_decode_bin_plugin_init (GstPlugin * plugin);
-gboolean gst_play_bin_plugin_init (GstPlugin * plugin);
 gboolean gst_play_bin2_plugin_init (GstPlugin * plugin);
 
 
