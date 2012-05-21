@@ -1993,15 +1993,8 @@ gst_text_overlay_text_chain (GstPad * pad, GstBuffer * buffer)
         GST_TEXT_OVERLAY_WAIT (overlay);
         GST_DEBUG ("Pad %s:%s resuming", GST_DEBUG_PAD_NAME (pad));
         if (overlay->text_flushing) {
-          if (overlay->video_flushing) {
-            /* we might have received a PAUSED->READY state change while waiting,
-               so we want to stop gracefully in this case */
-            ret = GST_FLOW_OK;
-          } else {
-            ret = GST_FLOW_WRONG_STATE;
-          }
           GST_OBJECT_UNLOCK (overlay);
-          GST_DEBUG ("text now flushing: wrong state");
+          ret = GST_FLOW_WRONG_STATE;
           goto beach;
         }
       }
