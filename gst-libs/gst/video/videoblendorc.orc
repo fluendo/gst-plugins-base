@@ -1,4 +1,4 @@
-.function orc_blend_little
+.function video_orc_blend_little
 .flags 1d
 .dest 4 d guint8
 .source 4 s guint8
@@ -28,7 +28,7 @@ x4 convwb t, d_wide
 orl t, t, a_alpha
 storel d, t
 
-.function orc_blend_big
+.function video_orc_blend_big
 .flags 1d
 .dest 4 d guint8
 .source 4 s guint8
@@ -60,7 +60,7 @@ x4 convwb t, d_wide
 orl t, t, a_alpha
 storel d, t
 
-.function cogorc_getline_I420
+.function video_cogorc_getline_I420
 .dest 4 d guint8
 .source 1 y guint8
 .source 1 u guint8
@@ -78,7 +78,7 @@ mergebw ay, c255, y
 mergewl d, ay, uv
 
 
-.function cogorc_putline_I420
+.function video_cogorc_putline_I420
 .dest 2 y guint8
 .dest 1 u guint8
 .dest 1 v guint8
@@ -98,7 +98,7 @@ avgub u, t1, t2
 splitwb t1, t2, vv
 avgub v, t1, t2
 
-.function cogorc_getline_YUY2
+.function video_cogorc_getline_YUY2
 .dest 8 ayuv guint8
 .source 4 yuy2 guint8
 .const 2 c255 0xff
@@ -113,7 +113,7 @@ mergewl uvuv, uv, uv
 x2 mergewl ayuv, ayay, uvuv
 
 
-.function cogorc_putline_YUY2
+.function video_cogorc_putline_YUY2
 .dest 4 yuy2 guint8
 .source 8 ayuv guint8
 .temp 2 yy
@@ -129,7 +129,7 @@ x2 select1wb yy, ayay
 x2 mergebw yuy2, yy, uv1
 
 
-.function cogorc_putline_UYVY
+.function video_cogorc_putline_UYVY
 .dest 4 yuy2 guint8
 .source 8 ayuv guint8
 .temp 2 yy
@@ -145,7 +145,7 @@ x2 select1wb yy, ayay
 x2 mergebw yuy2, uv1, yy
 
 
-.function cogorc_getline_UYVY
+.function video_cogorc_getline_UYVY
 .dest 8 ayuv guint8
 .source 4 uyvy guint8
 .const 2 c255 0xff
@@ -160,7 +160,7 @@ mergewl uvuv, uv, uv
 x2 mergewl ayuv, ayay, uvuv
 
 
-.function cogorc_getline_YUV9
+.function video_cogorc_getline_YUV9
 .dest 8 d guint8
 .source 2 y guint8
 .source 1 u guint8
@@ -180,7 +180,7 @@ x2 mergebw ay, c255, y
 x2 mergewl d, ay, uv
 
 
-.function cogorc_getline_Y42B
+.function video_cogorc_getline_Y42B
 .dest 8 ayuv guint8
 .source 2 yy guint8
 .source 1 u guint8
@@ -196,7 +196,7 @@ x2 mergebw ayay, c255, yy
 mergewl uvuv, uv, uv
 x2 mergewl ayuv, ayay, uvuv
 
-.function cogorc_putline_Y42B
+.function video_cogorc_putline_Y42B
 .dest 2 y guint8
 .dest 1 u guint8
 .dest 1 v guint8
@@ -213,7 +213,7 @@ splitwb v, u, uv1
 x2 select1wb y, ayay
 
 
-.function cogorc_getline_Y444
+.function video_cogorc_getline_Y444
 .dest 4 ayuv guint8
 .source 1 y guint8
 .source 1 u guint8
@@ -227,7 +227,7 @@ mergebw ay, c255, y
 mergewl ayuv, ay, uv
 
 
-.function cogorc_putline_Y444
+.function video_cogorc_putline_Y444
 .dest 1 y guint8
 .dest 1 u guint8
 .dest 1 v guint8
@@ -239,7 +239,7 @@ splitlw uv, ay, ayuv
 splitwb v, u, uv
 select1wb y, ay
 
-.function cogorc_getline_Y800
+.function video_cogorc_getline_Y800
 .dest 4 ayuv guint8
 .source 1 y guint8
 .const 1 c255 255
@@ -250,7 +250,7 @@ mergebw ay, c255, y
 mergewl ayuv, ay, c0x8080
 
 
-.function cogorc_putline_Y800
+.function video_cogorc_putline_Y800
 .dest 1 y guint8
 .source 4 ayuv guint8
 .temp 2 ay
@@ -259,7 +259,7 @@ select0lw ay, ayuv
 select1wb y, ay
 
 
-.function cogorc_putline_Y16
+.function video_cogorc_putline_Y16
 .dest 2 y guint8
 .source 4 ayuv guint8
 .temp 2 ay
@@ -271,7 +271,7 @@ convubw ay, yb
 shlw y, ay, 8
 
 
-.function cogorc_getline_Y16
+.function video_cogorc_getline_Y16
 .dest 4 ayuv guint8
 .source 2 y guint8
 .const 1 c255 255
@@ -283,19 +283,19 @@ convhwb yb, y
 mergebw ay, c255, yb
 mergewl ayuv, ay, c0x8080
 
-.function cogorc_getline_BGRA
+.function video_cogorc_getline_BGRA
 .dest 4 argb guint8
 .source 4 bgra guint8
 
 swapl argb, bgra
 
-.function cogorc_putline_BGRA
+.function video_cogorc_putline_BGRA
 .dest 4 bgra guint8
 .source 4 argb guint8
 
 swapl bgra, argb
 
-.function cogorc_putline_RGBA
+.function video_cogorc_putline_RGBA
 .dest 4 rgba guint8
 .source 4 argb guint8
 .temp 1 a
@@ -314,7 +314,7 @@ mergebw ba, b, a
 mergebw rg, r, g
 mergewl rgba, rg, ba
 
-.function cogorc_getline_RGBA
+.function video_cogorc_getline_RGBA
 .dest 4 argb guint8
 .source 4 rgba guint8
 .temp 1 a
@@ -334,7 +334,7 @@ mergebw gb, g, b
 mergewl argb, ar, gb
 
 
-.function cogorc_getline_ABGR
+.function video_cogorc_getline_ABGR
 .dest 4 argb guint8
 .source 4 abgr guint8
 .temp 1 a
@@ -354,7 +354,7 @@ mergebw gb, g, b
 mergewl argb, ar, gb
 
 
-.function cogorc_putline_ABGR
+.function video_cogorc_putline_ABGR
 .dest 4 abgr guint8
 .source 4 argb guint8
 .temp 1 a
@@ -373,7 +373,7 @@ mergebw ab, a, b
 mergebw gr, g, r
 mergewl abgr, ab, gr
 
-.function cogorc_getline_NV12
+.function video_cogorc_getline_NV12
 .dest 8 d guint8
 .source 2 y guint8
 .source 2 uv guint8
@@ -385,7 +385,7 @@ mergewl uvuv, uv, uv
 x2 mergebw ay, c255, y
 x2 mergewl d, ay, uvuv
 
-.function cogorc_putline_NV12
+.function video_cogorc_putline_NV12
 .dest 2 y guint8
 .dest 2 uv guint8
 .source 8 ayuv guint8
@@ -399,7 +399,7 @@ x2 select1wb y, ay
 splitlw uv1, uv2, uvuv
 x2 avgub uv, uv1, uv2
 
-.function cogorc_getline_NV21
+.function video_cogorc_getline_NV21
 .dest 8 d guint8
 .source 2 y guint8
 .source 2 vu guint8
@@ -414,7 +414,7 @@ x2 mergebw ay, c255, y
 x2 mergewl d, ay, uvuv
 
 
-.function cogorc_putline_NV21
+.function video_cogorc_putline_NV21
 .dest 2 y guint8
 .dest 2 vu guint8
 .source 8 ayuv guint8
@@ -431,7 +431,7 @@ x2 avgub uv, uv1, uv2
 swapw vu, uv
 
 
-.function cogorc_getline_A420
+.function video_cogorc_getline_A420
 .dest 4 d guint8
 .source 1 y guint8
 .source 1 u guint8
@@ -448,7 +448,7 @@ mergebw uv, tu, tv
 mergebw ay, a, y
 mergewl d, ay, uv
 
-.function cogorc_putline_A420
+.function video_cogorc_putline_A420
 .dest 2 y guint8
 .dest 1 u guint8
 .dest 1 v guint8
@@ -470,7 +470,7 @@ avgub u, t1, t2
 splitwb t1, t2, vv
 avgub v, t1, t2
 
-.function orc_resample_bilinear_u32
+.function video_orc_resample_bilinear_u32
 .dest 4 d1 guint8
 .source 4 s1 guint8
 .param 4 p1
@@ -478,7 +478,7 @@ avgub v, t1, t2
 
 ldreslinl d1, s1, p1, p2
 
-.function orc_merge_linear_u8
+.function video_orc_merge_linear_u8
 .dest 1 d1
 .source 1 s1
 .source 1 s2

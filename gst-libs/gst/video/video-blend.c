@@ -261,7 +261,7 @@ static void
 getline_I420 (guint8 * dest, const GstBlendVideoFormatInfo * src, guint xoff,
     int j)
 {
-  cogorc_getline_I420 (dest,
+  video_cogorc_getline_I420 (dest,
       GET_LINE (src, 0, j) + xoff,
       GET_LINE (src, 1, j >> 1) + GST_ROUND_UP_2 (xoff / 2),
       GET_LINE (src, 2, j >> 1) + GST_ROUND_UP_2 (xoff / 2), src->width);
@@ -272,7 +272,7 @@ static void
 putline_I420 (GstBlendVideoFormatInfo * dest,
     GstBlendVideoFormatInfo * srcinfo, const guint8 * line, guint xoff, int j)
 {
-  cogorc_putline_I420 (GET_LINE (dest, 0, j) + xoff,
+  video_cogorc_putline_I420 (GET_LINE (dest, 0, j) + xoff,
       GET_LINE (dest, 1, j >> 1) + GST_ROUND_UP_2 (xoff / 2),
       GET_LINE (dest, 2, j >> 1) + GST_ROUND_UP_2 (xoff / 2),
       line, srcinfo->width / 2);
@@ -282,7 +282,7 @@ static void
 getline_YUY2 (guint8 * dest, const GstBlendVideoFormatInfo * src, guint xoff,
     int j)
 {
-  cogorc_getline_YUY2 (dest, GET_LINE (src, 0, j) +
+  video_cogorc_getline_YUY2 (dest, GET_LINE (src, 0, j) +
       (GST_ROUND_UP_2 (xoff * 4) / 2), src->width / 2);
 }
 
@@ -290,7 +290,7 @@ static void
 putline_YUY2 (GstBlendVideoFormatInfo * dest, GstBlendVideoFormatInfo * srcinfo,
     const guint8 * line, guint xoff, int j)
 {
-  cogorc_putline_YUY2 (GET_LINE (dest, 0,
+  video_cogorc_putline_YUY2 (GET_LINE (dest, 0,
           j) + (GST_ROUND_UP_2 (xoff * 4) / 2), line, srcinfo->width / 2);
 }
 
@@ -313,14 +313,14 @@ static void
 getline_UYVY (guint8 * dest, const GstBlendVideoFormatInfo * src, guint xoff,
     int j)
 {
-  cogorc_getline_UYVY (dest, GET_LINE (src, 0, j) + xoff * 2, src->width / 2);
+  video_cogorc_getline_UYVY (dest, GET_LINE (src, 0, j) + xoff * 2, src->width / 2);
 }
 
 static void
 putline_UYVY (GstBlendVideoFormatInfo * dest, GstBlendVideoFormatInfo * srcinfo,
     const guint8 * line, guint xoff, int j)
 {
-  cogorc_putline_UYVY (GET_LINE (dest, 0, j) +
+  video_cogorc_putline_UYVY (GET_LINE (dest, 0, j) +
       (GST_ROUND_UP_2 (xoff * 4) / 2), line, srcinfo->width / 2);
 }
 
@@ -495,7 +495,7 @@ static void
 getline_Y41B (guint8 * dest, const GstBlendVideoFormatInfo * src, guint xoff,
     int j)
 {
-  cogorc_getline_YUV9 (dest,
+  video_cogorc_getline_YUV9 (dest,
       GET_LINE (src, 0, j) + xoff,
       GET_LINE (src, 1, j) + (xoff / 4), GET_LINE (src, 2, j) + (xoff / 4),
       src->width / 2);
@@ -551,7 +551,7 @@ static void
 getline_Y42B (guint8 * dest, const GstBlendVideoFormatInfo * src, guint xoff,
     int j)
 {
-  cogorc_getline_Y42B (dest,
+  video_cogorc_getline_Y42B (dest,
       GET_LINE (src, 0, j) + xoff,
       GET_LINE (src, 1, j) + GST_ROUND_UP_2 (xoff / 2),
       GET_LINE (src, 2, j) + GST_ROUND_UP_2 (xoff / 2), src->width / 2);
@@ -561,7 +561,7 @@ static void
 putline_Y42B (GstBlendVideoFormatInfo * dest,
     GstBlendVideoFormatInfo * srcinfo, const guint8 * line, guint xoff, int j)
 {
-  cogorc_putline_Y42B (GET_LINE (dest, 0, j) + xoff,
+  video_cogorc_putline_Y42B (GET_LINE (dest, 0, j) + xoff,
       GET_LINE (dest, 1, j) + GST_ROUND_UP_2 (xoff / 2),
       GET_LINE (dest, 2, j) + GST_ROUND_UP_2 (xoff / 2), line,
       srcinfo->width / 2);
@@ -571,7 +571,7 @@ static void
 getline_Y444 (guint8 * dest, const GstBlendVideoFormatInfo * src, guint xoff,
     int j)
 {
-  cogorc_getline_Y444 (dest,
+  video_cogorc_getline_Y444 (dest,
       GET_LINE (src, 0, j) + xoff,
       GET_LINE (src, 1, j) + xoff, GET_LINE (src, 2, j) + xoff, src->width);
 }
@@ -580,7 +580,7 @@ static void
 putline_Y444 (GstBlendVideoFormatInfo * dest,
     GstBlendVideoFormatInfo * srcinfo, const guint8 * line, guint xoff, int j)
 {
-  cogorc_putline_Y444 (GET_LINE (dest, 0, j) + xoff,
+  video_cogorc_putline_Y444 (GET_LINE (dest, 0, j) + xoff,
       GET_LINE (dest, 1, j) + xoff,
       GET_LINE (dest, 2, j) + xoff, line, srcinfo->width);
 }
@@ -589,35 +589,35 @@ static void
 getline_Y800 (guint8 * dest, const GstBlendVideoFormatInfo * src, guint xoff,
     int j)
 {
-  cogorc_getline_Y800 (dest, GET_LINE (src, 0, j) + xoff, src->width);
+  video_cogorc_getline_Y800 (dest, GET_LINE (src, 0, j) + xoff, src->width);
 }
 
 static void
 putline_Y800 (GstBlendVideoFormatInfo * dest,
     GstBlendVideoFormatInfo * srcinfo, const guint8 * line, guint xoff, int j)
 {
-  cogorc_putline_Y800 (GET_LINE (dest, 0, j) + xoff, line, srcinfo->width);
+  video_cogorc_putline_Y800 (GET_LINE (dest, 0, j) + xoff, line, srcinfo->width);
 }
 
 static void
 getline_Y16 (guint8 * dest, const GstBlendVideoFormatInfo * src, guint xoff,
     int j)
 {
-  cogorc_getline_Y16 (dest, GET_LINE (src, 0, j) + xoff * 2, src->width);
+  video_cogorc_getline_Y16 (dest, GET_LINE (src, 0, j) + xoff * 2, src->width);
 }
 
 static void
 putline_Y16 (GstBlendVideoFormatInfo * dest,
     GstBlendVideoFormatInfo * srcinfo, const guint8 * line, guint xoff, int j)
 {
-  cogorc_putline_Y16 (GET_LINE (dest, 0, j) + xoff * 2, line, srcinfo->width);
+  video_cogorc_putline_Y16 (GET_LINE (dest, 0, j) + xoff * 2, line, srcinfo->width);
 }
 
 static void
 getline_NV12 (guint8 * dest, const GstBlendVideoFormatInfo * src, guint xoff,
     int j)
 {
-  cogorc_getline_NV12 (dest,
+  video_cogorc_getline_NV12 (dest,
       GET_LINE (src, 0, j) + xoff,
       GET_LINE (src, 1, j >> 1) + xoff, src->width / 2);
 }
@@ -626,7 +626,7 @@ static void
 putline_NV12 (GstBlendVideoFormatInfo * dest,
     GstBlendVideoFormatInfo * srcinfo, const guint8 * line, guint xoff, int j)
 {
-  cogorc_putline_NV12 (GET_LINE (dest, 0, j) + xoff,
+  video_cogorc_putline_NV12 (GET_LINE (dest, 0, j) + xoff,
       GET_LINE (dest, 1, j >> 1) + xoff, line, srcinfo->width / 2);
 }
 
@@ -634,7 +634,7 @@ static void
 getline_NV21 (guint8 * dest, const GstBlendVideoFormatInfo * src, guint xoff,
     int j)
 {
-  cogorc_getline_NV21 (dest,
+  video_cogorc_getline_NV21 (dest,
       GET_LINE (src, 0, j) + xoff,
       GET_LINE (src, 1, j >> 1) + xoff, src->width / 2);
 }
@@ -643,7 +643,7 @@ static void
 putline_NV21 (GstBlendVideoFormatInfo * dest,
     GstBlendVideoFormatInfo * srcinfo, const guint8 * line, guint xoff, int j)
 {
-  cogorc_putline_NV21 (GET_LINE (dest, 0, j) + xoff,
+  video_cogorc_putline_NV21 (GET_LINE (dest, 0, j) + xoff,
       GET_LINE (dest, 1, j >> 1) + xoff, line, srcinfo->width / 2);
 }
 
@@ -710,7 +710,7 @@ static void
 getline_A420 (guint8 * dest, const GstBlendVideoFormatInfo * src, guint xoff,
     int j)
 {
-  cogorc_getline_A420 (dest,
+  video_cogorc_getline_A420 (dest,
       GET_LINE (src, 0, j) + xoff,
       GET_LINE (src, 1, j >> 1) + GST_ROUND_UP_2 (xoff / 2),
       GET_LINE (src, 2, j >> 1) + GST_ROUND_UP_2 (xoff / 2),
@@ -721,7 +721,7 @@ static void
 putline_A420 (GstBlendVideoFormatInfo * dest,
     GstBlendVideoFormatInfo * srcinfo, const guint8 * line, guint xoff, int j)
 {
-  cogorc_putline_A420 (GET_LINE (dest, 0, j) + xoff,
+  video_cogorc_putline_A420 (GET_LINE (dest, 0, j) + xoff,
       GET_LINE (dest, 1, j >> 1) + GST_ROUND_UP_2 (xoff / 2),
       GET_LINE (dest, 2, j >> 1) + GST_ROUND_UP_2 (xoff / 2),
       GET_LINE (dest, 3, j) + GST_ROUND_UP_2 (xoff / 2), line,
@@ -732,7 +732,7 @@ static void
 getline_YUV9 (guint8 * dest, const GstBlendVideoFormatInfo * src, guint xoff,
     int j)
 {
-  cogorc_getline_YUV9 (dest,
+  video_cogorc_getline_YUV9 (dest,
       GET_LINE (src, 0, j) + xoff,
       GET_LINE (src, 1, j >> 2) + GST_ROUND_UP_4 (xoff / 4),
       GET_LINE (src, 2, j >> 2) + GST_ROUND_UP_4 (xoff / 4), src->width / 2);
@@ -942,14 +942,14 @@ static void
 getline_RGBA (guint8 * dest, const GstBlendVideoFormatInfo * src, guint xoff,
     int j)
 {
-  cogorc_getline_RGBA (dest, GET_LINE (src, 0, j) + (4 * xoff), src->width);
+  video_cogorc_getline_RGBA (dest, GET_LINE (src, 0, j) + (4 * xoff), src->width);
 }
 
 static void
 putline_RGBA (GstBlendVideoFormatInfo * dest, GstBlendVideoFormatInfo * srcinfo,
     const guint8 * line, guint xoff, int j)
 {
-  cogorc_putline_RGBA (GET_LINE (dest, 0, j) + (4 * xoff),
+  video_cogorc_putline_RGBA (GET_LINE (dest, 0, j) + (4 * xoff),
       line, srcinfo->width);
 }
 
@@ -1088,28 +1088,28 @@ static void
 getline_BGRA (guint8 * dest, const GstBlendVideoFormatInfo * src, guint xoff,
     int j)
 {
-  cogorc_getline_BGRA (dest, GET_LINE (src, 0, j) + xoff * 4, src->width);
+  video_cogorc_getline_BGRA (dest, GET_LINE (src, 0, j) + xoff * 4, src->width);
 }
 
 static void
 putline_BGRA (GstBlendVideoFormatInfo * dest,
     GstBlendVideoFormatInfo * srcinfo, const guint8 * line, guint xoff, int j)
 {
-  cogorc_putline_BGRA (GET_LINE (dest, 0, j) + xoff * 4, line, srcinfo->width);
+  video_cogorc_putline_BGRA (GET_LINE (dest, 0, j) + xoff * 4, line, srcinfo->width);
 }
 
 static void
 getline_ABGR (guint8 * dest, const GstBlendVideoFormatInfo * src, guint xoff,
     int j)
 {
-  cogorc_getline_ABGR (dest, GET_LINE (src, 0, j) + (xoff * 4), src->width);
+  video_cogorc_getline_ABGR (dest, GET_LINE (src, 0, j) + (xoff * 4), src->width);
 }
 
 static void
 putline_ABGR (GstBlendVideoFormatInfo * dest,
     GstBlendVideoFormatInfo * srcinfo, const guint8 * line, guint xoff, int j)
 {
-  cogorc_putline_ABGR (GET_LINE (dest, 0, j) + (xoff * 4),
+  video_cogorc_putline_ABGR (GET_LINE (dest, 0, j) + (xoff * 4),
       line, srcinfo->width);
 }
 
@@ -1261,7 +1261,7 @@ video_blend_scale_linear_RGBA (GstBlendVideoFormatInfo * src,
 #define LINE(x) ((tmpbuf) + (dest_size)*((x)&1))
 
   acc = 0;
-  orc_resample_bilinear_u32 (LINE (0), src->pixels, 0, x_increment, dest_width);
+  video_orc_resample_bilinear_u32 (LINE (0), src->pixels, 0, x_increment, dest_width);
   y1 = 0;
   for (i = 0; i < dest_height; i++) {
     j = acc >> 16;
@@ -1271,16 +1271,16 @@ video_blend_scale_linear_RGBA (GstBlendVideoFormatInfo * src,
       memcpy (dest_pixels + i * dest_stride, LINE (j), dest_size);
     } else {
       if (j > y1) {
-        orc_resample_bilinear_u32 (LINE (j),
+        video_orc_resample_bilinear_u32 (LINE (j),
             src->pixels + j * src_stride, 0, x_increment, dest_width);
         y1++;
       }
       if (j >= y1) {
-        orc_resample_bilinear_u32 (LINE (j + 1),
+        video_orc_resample_bilinear_u32 (LINE (j + 1),
             src->pixels + (j + 1) * src_stride, 0, x_increment, dest_width);
         y1++;
       }
-      orc_merge_linear_u8 (dest_pixels + i * dest_stride,
+      video_orc_merge_linear_u8 (dest_pixels + i * dest_stride,
           LINE (j), LINE (j + 1), (x >> 8), dest_width * 4);
     }
 
@@ -1368,9 +1368,9 @@ video_blend (GstBlendVideoFormatInfo * dest,
 
     /* FIXME
      * #if G_BYTE_ORDER == LITTLE_ENDIAN
-     * orc_blend_little (tmpdestline, tmpsrcline, dest->width);
+     * video_orc_blend_little (tmpdestline, tmpsrcline, dest->width);
      * #else
-     * orc_blend_big (tmpdestline, tmpsrcline, src->width);
+     * video_orc_blend_big (tmpdestline, tmpsrcline, src->width);
      * #endif
      */
 
