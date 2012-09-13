@@ -34,6 +34,6 @@
 /* temporary */
 extern uint8_t cropTbl[256 + 2 * MAX_NEG_CROP];
 
-void dsputil_static_init(void);
+void ffmpegcolorpspace_dsputil_static_init(void);
 
 #endif

@@ -513,14 +513,15 @@ get_pix_fmt_info (enum PixelFormat format)
 }
 
 void
-avcodec_get_chroma_sub_sample (int pix_fmt, int *h_shift, int *v_shift)
+ffmpegcolorspace_avcodec_get_chroma_sub_sample (int pix_fmt, int *h_shift,
+    int *v_shift)
 {
   *h_shift = get_pix_fmt_info (pix_fmt)->x_chroma_shift;
   *v_shift = get_pix_fmt_info (pix_fmt)->y_chroma_shift;
 }
 
 const char *
-avcodec_get_pix_fmt_name (int pix_fmt)
+ffmpegcolorspace_avcodec_get_pix_fmt_name (int pix_fmt)
 {
   if (pix_fmt < 0 || pix_fmt >= PIX_FMT_NB)
     return "???";
@@ -547,7 +548,7 @@ avpicture_layout (const AVPicture * src, int pix_fmt, int width, int height,
   PixFmtInfo *pf = get_pix_fmt_info (pix_fmt);
   int i, j, w, h, data_planes;
   const unsigned char *s;
-  int size = avpicture_get_size (pix_fmt, width, height);
+  int size = ffmpegcolorspace_avpicture_get_size (pix_fmt, width, height);
 
   if (size > dest_size)
     return -1;
@@ -594,7 +595,7 @@ avpicture_layout (const AVPicture * src, int pix_fmt, int width, int height,
 #endif
 
 int
-avpicture_get_size (int pix_fmt, int width, int height)
+ffmpegcolorspace_avpicture_get_size (int pix_fmt, int width, int height)
 {
   AVPicture dummy_pict;
 
@@ -606,7 +607,8 @@ avpicture_get_size (int pix_fmt, int width, int height)
  * compute the loss when converting from a pixel format to another 
  */
 int
-avcodec_get_pix_fmt_loss (int dst_pix_fmt, int src_pix_fmt, int has_alpha)
+ffmpegcolorspace_avcodec_get_pix_fmt_loss (int dst_pix_fmt, int src_pix_fmt,
+    int has_alpha)
 {
   const PixFmtInfo *pf, *ps;
   int loss;
@@ -700,7 +702,7 @@ avg_bits_per_pixel (int pix_fmt)
 }
 
 static int
-avcodec_find_best_pix_fmt1 (int pix_fmt_mask,
+ffmpegcolorspace_avcodec_find_best_pix_fmt1 (int pix_fmt_mask,
     int src_pix_fmt, int has_alpha, int loss_mask)
 {
   int dist, i, loss, min_dist, dst_pix_fmt;
@@ -710,7 +712,9 @@ avcodec_find_best_pix_fmt1 (int pix_fmt_mask,
   min_dist = 0x7fffffff;
   for (i = 0; i < PIX_FMT_NB; i++) {
     if (pix_fmt_mask & (1 << i)) {
-      loss = avcodec_get_pix_fmt_loss (i, src_pix_fmt, has_alpha) & loss_mask;
+      loss =
+          ffmpegcolorspace_avcodec_get_pix_fmt_loss (i, src_pix_fmt,
+          has_alpha) & loss_mask;
       if (loss == 0) {
         dist = avg_bits_per_pixel (i);
         if (dist < min_dist) {
@@ -727,7 +731,7 @@ avcodec_find_best_pix_fmt1 (int pix_fmt_mask,
  * find best pixel format to convert to. Return -1 if none found 
  */
 int
-avcodec_find_best_pix_fmt (int pix_fmt_mask, int src_pix_fmt,
+ffmpegcolorspace_avcodec_find_best_pix_fmt (int pix_fmt_mask, int src_pix_fmt,
     int has_alpha, int *loss_ptr)
 {
   int dst_pix_fmt, loss_mask, i;
@@ -745,7 +749,8 @@ avcodec_find_best_pix_fmt (int pix_fmt_mask, int src_pix_fmt,
   i = 0;
   for (;;) {
     loss_mask = loss_mask_order[i++];
-    dst_pix_fmt = avcodec_find_best_pix_fmt1 (pix_fmt_mask, src_pix_fmt,
+    dst_pix_fmt =
+        ffmpegcolorspace_avcodec_find_best_pix_fmt1 (pix_fmt_mask, src_pix_fmt,
         has_alpha, loss_mask);
     if (dst_pix_fmt >= 0)
       goto found;
@@ -755,7 +760,9 @@ avcodec_find_best_pix_fmt (int pix_fmt_mask, int src_pix_fmt,
   return -1;
 found:
   if (loss_ptr)
-    *loss_ptr = avcodec_get_pix_fmt_loss (dst_pix_fmt, src_pix_fmt, has_alpha);
+    *loss_ptr =
+        ffmpegcolorspace_avcodec_get_pix_fmt_loss (dst_pix_fmt, src_pix_fmt,
+        has_alpha);
   return dst_pix_fmt;
 }
 
@@ -3523,7 +3530,7 @@ avpicture_alloc (AVPicture * picture, int pix_fmt, int width, int height,
   unsigned int size;
   void *ptr;
 
-  size = avpicture_get_size (pix_fmt, width, height);
+  size = ffmpegcolorspace_avpicture_get_size (pix_fmt, width, height);
   ptr = av_malloc (size);
   if (!ptr)
     goto fail;
@@ -3824,7 +3831,8 @@ get_alpha_info_pal8 (const AVPicture * src, int width, int height)
  * @return ored mask of FF_ALPHA_xxx constants
  */
 int
-img_get_alpha_info (const AVPicture * src, int pix_fmt, int width, int height)
+ffmpegcolorspace_img_get_alpha_info (const AVPicture * src, int pix_fmt,
+    int width, int height)
 {
   const PixFmtInfo *pf;
   int ret;

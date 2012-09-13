@@ -217,10 +217,10 @@ typedef struct AVPaletteControl {
 
 } AVPaletteControl;
 
-int avpicture_get_size(int pix_fmt, int width, int height);
+int ffmpegcolorspace_avpicture_get_size(int pix_fmt, int width, int height);
 
-void avcodec_get_chroma_sub_sample(int pix_fmt, int *h_shift, int *v_shift);
-const char *avcodec_get_pix_fmt_name(int pix_fmt);
+void ffmpegcolorspace_avcodec_get_chroma_sub_sample(int pix_fmt, int *h_shift, int *v_shift);
+const char *ffmpegcolorspace_avcodec_get_pix_fmt_name(int pix_fmt);
 void avcodec_set_dimensions(AVCodecContext *s, int width, int height);
 enum PixelFormat avcodec_get_pix_fmt(const char* name);
 
@@ -231,14 +231,14 @@ enum PixelFormat avcodec_get_pix_fmt(const char* name);
 #define FF_LOSS_COLORQUANT  0x0010 /* loss due to color quantization */
 #define FF_LOSS_CHROMA      0x0020 /* loss of chroma (e.g. rgb to gray conversion) */
 
-int avcodec_get_pix_fmt_loss(int dst_pix_fmt, int src_pix_fmt,
+int ffmpegcolorspace_avcodec_get_pix_fmt_loss(int dst_pix_fmt, int src_pix_fmt,
                              int has_alpha);
-int avcodec_find_best_pix_fmt(int pix_fmt_mask, int src_pix_fmt,
+int ffmpegcolorspace_avcodec_find_best_pix_fmt(int pix_fmt_mask, int src_pix_fmt,
                               int has_alpha, int *loss_ptr);
 
 #define FF_ALPHA_TRANSP       0x0001 /* image has some totally transparent pixels */
 #define FF_ALPHA_SEMI_TRANSP  0x0002 /* image has some transparent pixels */
-int img_get_alpha_info(const AVPicture *src,
+int ffmpegcolorspace_img_get_alpha_info(const AVPicture *src,
                        int pix_fmt, int width, int height);
 
 /* convert among pixel formats */
@@ -246,10 +246,10 @@ int img_convert(AVPicture *dst, int dst_pix_fmt,
                 const AVPicture *src, int pix_fmt, 
                 int width, int height);
 
-void avcodec_init(void);
+void ffmpegcolorspace_avcodec_init(void);
 
-void avcodec_get_context_defaults(AVCodecContext *s);
-AVCodecContext *avcodec_alloc_context(void);
+void ffmpegcolorspace_avcodec_get_context_defaults(AVCodecContext *s);
+AVCodecContext *ffmpegcolorspace_avcodec_alloc_context(void);
 
 /* memory */
 void *av_malloc(unsigned int size);
@@ -258,7 +258,7 @@ void *av_realloc(void *ptr, unsigned int size);
 void av_free(void *ptr);
 char *av_strdup(const char *s);
 void av_freep(void *ptr);
-void *av_fast_realloc(void *ptr, unsigned int *size, unsigned int min_size);
+void *ffmpegcolorspace_av_fast_realloc(void *ptr, unsigned int *size, unsigned int min_size);
 /* for static data only */
 /* call av_free_static to release all staticaly allocated tables */
 void av_free_static(void);

@@ -32,7 +32,7 @@ uint8_t cropTbl[256 + 2 * MAX_NEG_CROP] = { 0, };
 
 /* init static data */
 void
-dsputil_static_init (void)
+ffmpegcolorpspace_dsputil_static_init (void)
 {
   int i;
 

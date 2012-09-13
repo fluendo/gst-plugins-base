@@ -61,7 +61,8 @@ av_strdup (const char *s)
  * realloc which does nothing if the block is large enough
  */
 void *
-av_fast_realloc (void *ptr, unsigned int *size, unsigned int min_size)
+ffmpegcolorspace_av_fast_realloc (void *ptr, unsigned int *size,
+    unsigned int min_size)
 {
   if (min_size < *size)
     return ptr;
@@ -86,7 +87,7 @@ av_mallocz_static (unsigned int size)
 
   if (ptr) {
     array_static =
-        av_fast_realloc (array_static, &allocated_static,
+        ffmpegcolorspace_av_fast_realloc (array_static, &allocated_static,
         sizeof (void *) * (last_static + 1));
     array_static[last_static++] = ptr;
   }
@@ -120,7 +121,7 @@ av_freep (void *arg)
 }
 
 void
-avcodec_get_context_defaults (AVCodecContext * s)
+ffmpegcolorspace_avcodec_get_context_defaults (AVCodecContext * s)
 {
   memset (s, 0, sizeof (AVCodecContext));
 
@@ -133,21 +134,21 @@ avcodec_get_context_defaults (AVCodecContext * s)
  * this can be deallocated by simply calling free() 
  */
 AVCodecContext *
-avcodec_alloc_context (void)
+ffmpegcolorspace_avcodec_alloc_context (void)
 {
   AVCodecContext *avctx = av_malloc (sizeof (AVCodecContext));
 
   if (avctx == NULL)
     return NULL;
 
-  avcodec_get_context_defaults (avctx);
+  ffmpegcolorspace_avcodec_get_context_defaults (avctx);
 
   return avctx;
 }
 
 /* must be called before any other functions */
 void
-avcodec_init (void)
+ffmpegcolorspace_avcodec_init (void)
 {
   static int inited = 0;
 
@@ -155,5 +156,5 @@ avcodec_init (void)
     return;
   inited = 1;
 
-  dsputil_static_init ();
+  ffmpegcolorpspace_dsputil_static_init ();
 }

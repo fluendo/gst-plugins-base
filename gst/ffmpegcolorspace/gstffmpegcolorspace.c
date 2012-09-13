@@ -259,7 +259,7 @@ gst_ffmpegcsp_set_caps (GstBaseTransform * btrans, GstCaps * incaps,
       && gst_value_compare (in_par, out_par) != GST_VALUE_EQUAL)
     goto format_mismatch;
 
-  ctx = avcodec_alloc_context ();
+  ctx = ffmpegcolorspace_avcodec_alloc_context ();
 
   space->width = ctx->width = in_width;
   space->height = ctx->height = in_height;
@@ -409,7 +409,7 @@ gst_ffmpegcsp_get_unit_size (GstBaseTransform * btrans, GstCaps * caps,
   gst_structure_get_int (structure, "width", &width);
   gst_structure_get_int (structure, "height", &height);
 
-  ctx = avcodec_alloc_context ();
+  ctx = ffmpegcolorspace_avcodec_alloc_context ();
 
   g_assert (ctx != NULL);
 
@@ -422,11 +422,11 @@ gst_ffmpegcsp_get_unit_size (GstBaseTransform * btrans, GstCaps * caps,
     goto beach;
   }
 
-  *size = avpicture_get_size (ctx->pix_fmt, width, height);
+  *size = ffmpegcolorspace_avpicture_get_size (ctx->pix_fmt, width, height);
 
   /* ffmpeg frames have the palette after the frame data, whereas
    * GStreamer currently puts it into the caps as 'palette_data' field,
-   * so for paletted data the frame size avpicture_get_size() returns is
+   * so for paletted data the frame size ffmpegcolorspace_avpicture_get_size() returns is
    * 1024 bytes larger than what GStreamer expects. */
   if (gst_structure_has_field (structure, "palette_data") &&
       ctx->pix_fmt == PIX_FMT_PAL8) {
@@ -504,7 +504,7 @@ plugin_init (GstPlugin * plugin)
       "FFMPEG-based colorspace converter");
   GST_DEBUG_CATEGORY_GET (ffmpegcolorspace_performance, "GST_PERFORMANCE");
 
-  avcodec_init ();
+  ffmpegcolorspace_avcodec_init ();
 
   return gst_element_register (plugin, "ffmpegcolorspace",
       GST_RANK_NONE, GST_TYPE_FFMPEGCSP);
