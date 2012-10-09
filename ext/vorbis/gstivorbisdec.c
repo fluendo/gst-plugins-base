@@ -30,9 +30,15 @@ plugin_init (GstPlugin * plugin)
 {
 
   /* if tremor is around, there is probably good reason for it, so preferred */
+#ifdef __BIONIC__
+  if (!gst_element_register (plugin, "ivorbisdec", GST_RANK_PRIMARY,
+          gst_vorbis_dec_get_type ()))
+    return FALSE;
+#else
   if (!gst_element_register (plugin, "ivorbisdec", GST_RANK_SECONDARY,
           gst_vorbis_dec_get_type ()))
     return FALSE;
+#endif
 
   GST_DEBUG_CATEGORY_INIT (vorbisdec_debug, "ivorbisdec", 0,
       "vorbis decoding element (integer decoder)");

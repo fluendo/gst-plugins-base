@@ -40,9 +40,15 @@ plugin_init (GstPlugin * plugin)
           GST_TYPE_VORBISENC))
     return FALSE;
 
+#ifdef __BIONIC__
+  if (!gst_element_register (plugin, "vorbisdec", GST_RANK_SECONDARY,
+          gst_vorbis_dec_get_type ()))
+    return FALSE;
+#else
   if (!gst_element_register (plugin, "vorbisdec", GST_RANK_PRIMARY,
           gst_vorbis_dec_get_type ()))
     return FALSE;
+#endif
 
   if (!gst_element_register (plugin, "vorbisparse", GST_RANK_NONE,
           gst_vorbis_parse_get_type ()))
