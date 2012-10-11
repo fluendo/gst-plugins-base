@@ -1,7 +1,7 @@
 
 .init gst_videoscale_orc_init
 
-.function orc_merge_linear_u8
+.function gst_videoscale_orc_merge_linear_u8
 .dest 1 d1
 .source 1 s1
 .source 1 s2
@@ -22,7 +22,7 @@ addb d1, t, a
 
 
 
-.function orc_merge_linear_u16
+.function gst_videoscale_orc_merge_linear_u16
 .dest 2 d1
 .source 2 s1
 .source 2 s2
@@ -40,28 +40,28 @@ shrul t1, t1, 16
 convlw d1, t1
 
 
-.function orc_splat_u16
+.function gst_videoscale_orc_splat_u16
 .dest 2 d1
 .param 2 p1
 
 copyw d1, p1
 
 
-.function orc_splat_u32
+.function gst_videoscale_orc_splat_u32
 .dest 4 d1
 .param 4 p1
 
 copyl d1, p1
 
 
-.function orc_splat_u64
+.function gst_videoscale_orc_splat_u64
 .dest 8 d1
 .longparam 8 p1
 
 copyq d1, p1
 
 
-.function orc_downsample_u8
+.function gst_videoscale_orc_downsample_u8
 .dest 1 d1 guint8
 .source 2 s1 guint8
 .temp 1 t1
@@ -71,7 +71,7 @@ splitwb t1, t2, s1
 avgub d1, t1, t2
 
 
-.function orc_downsample_u16
+.function gst_videoscale_orc_downsample_u16
 .dest 2 d1 guint16
 .source 4 s1 guint16
 .temp 2 t1
