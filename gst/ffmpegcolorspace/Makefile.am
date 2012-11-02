@@ -8,7 +8,9 @@ libgstffmpegcolorspace_la_SOURCES = \
 	utils.c \
 	imgconvert.c
 
-libgstffmpegcolorspace_la_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_BASE_CFLAGS) $(GST_CFLAGS)
+libgstffmpegcolorspace_la_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_BASE_CFLAGS) $(GST_CFLAGS) \
+	-Dav_mallocz=ffmpegcolorspace_avmallocz -Dav_strdup=ffmpegcolorspace_avstrdup \
+	-Dav_freep=ffmpegcolorspace_avfreep
 libgstffmpegcolorspace_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
 libgstffmpegcolorspace_la_LIBADD = \
 	$(top_builddir)/gst-libs/gst/video/libgstvideo-$(GST_MAJORMINOR).la \
