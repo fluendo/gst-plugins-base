@@ -69,7 +69,7 @@ GST_STATIC_PAD_TEMPLATE ("sink",
     GST_STATIC_CAPS ("audio/x-vorbis")
     );
 
-GST_BOILERPLATE (GstVorbisDec, gst_vorbis_dec, GstAudioDecoder,
+GST_BOILERPLATE (GST_VORBIS_DEC_GLIB_TYPE_NAME, gst_vorbis_dec, GstAudioDecoder,
     GST_TYPE_AUDIO_DECODER);
 
 static void vorbis_dec_finalize (GObject * object);
