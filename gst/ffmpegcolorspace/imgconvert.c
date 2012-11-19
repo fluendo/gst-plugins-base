@@ -1887,10 +1887,10 @@ yuv420p10be_to_yuv444p (AVPicture * dst, const AVPicture * src, int width,
       cr = *src_cr1++;
       y1 = *lum1++;
       y2 = *lum2++;
-      cb = GUINT16_FROM_BE (cb) >> 6;
-      cr = GUINT16_FROM_BE (cr) >> 6;
-      y1 = GUINT16_FROM_BE (y1) >> 6;
-      y2 = GUINT16_FROM_BE (y2) >> 6;
+      cb = GUINT16_FROM_BE (cb) >> 2;
+      cr = GUINT16_FROM_BE (cr) >> 2;
+      y1 = GUINT16_FROM_BE (y1) >> 2;
+      y2 = GUINT16_FROM_BE (y2) >> 2;
 
       *dst_lum1++ = y1;
       *dst_lum2++ = y2;
@@ -1899,8 +1899,8 @@ yuv420p10be_to_yuv444p (AVPicture * dst, const AVPicture * src, int width,
 
       y1 = *lum1++;
       y2 = *lum2++;
-      y1 = GUINT16_FROM_BE (y1) >> 6;
-      y2 = GUINT16_FROM_BE (y2) >> 6;
+      y1 = GUINT16_FROM_BE (y1) >> 2;
+      y2 = GUINT16_FROM_BE (y2) >> 2;
 
       *dst_lum1++ = y1;
       *dst_lum2++ = y2;
@@ -1913,10 +1913,10 @@ yuv420p10be_to_yuv444p (AVPicture * dst, const AVPicture * src, int width,
       cr = *src_cr1++;
       y1 = *lum1++;
       y2 = *lum2++;
-      cb = GUINT16_FROM_BE (cb) >> 6;
-      cr = GUINT16_FROM_BE (cr) >> 6;
-      y1 = GUINT16_FROM_BE (y1) >> 6;
-      y2 = GUINT16_FROM_BE (y2) >> 6;
+      cb = GUINT16_FROM_BE (cb) >> 2;
+      cr = GUINT16_FROM_BE (cr) >> 2;
+      y1 = GUINT16_FROM_BE (y1) >> 2;
+      y2 = GUINT16_FROM_BE (y2) >> 2;
 
       *dst_lum1++ = y1;
       *dst_lum2++ = y2;
@@ -1945,29 +1945,29 @@ yuv420p10be_to_yuv444p (AVPicture * dst, const AVPicture * src, int width,
       cb = *src_cb1++;
       cr = *src_cr1++;
       y1 = *lum1++;
-      cb = GUINT16_FROM_BE (cb) >> 6;
-      cr = GUINT16_FROM_BE (cr) >> 6;
-      y1 = GUINT16_FROM_BE (y1) >> 6;
+      cb = GUINT16_FROM_BE (cb) >> 2;
+      cr = GUINT16_FROM_BE (cr) >> 2;
+      y1 = GUINT16_FROM_BE (y1) >> 2;
 
       *dst_lum1++ = y1;
       *dst_cb1++ = cb;
       *dst_cr1++ = cr;
 
       y1 = *lum1++;
-      y1 = GUINT16_FROM_BE (y1) >> 6;
+      y1 = GUINT16_FROM_BE (y1) >> 2;
 
       *dst_lum1++ = y1;
-      *dst_cb1++ = cb >> 6;
-      *dst_cr1++ = cr >> 6;
+      *dst_cb1++ = cb >> 2;
+      *dst_cr1++ = cr >> 2;
     }
     /* odd width */
     if (width % 2 != 0) {
       cb = *src_cb1++;
       cr = *src_cr1++;
       y1 = *lum1++;
-      cb = GUINT16_FROM_BE (cb) >> 6;
-      cr = GUINT16_FROM_BE (cr) >> 6;
-      y1 = GUINT16_FROM_BE (y1) >> 6;
+      cb = GUINT16_FROM_BE (cb) >> 2;
+      cr = GUINT16_FROM_BE (cr) >> 2;
+      y1 = GUINT16_FROM_BE (y1) >> 2;
       *dst_lum1++ = y1;
       *dst_cb1++ = cb;
       *dst_cr1++ = cr;
@@ -2008,10 +2008,10 @@ yuv420p10le_to_yuv444p (AVPicture * dst, const AVPicture * src, int width,
       cr = *src_cr1++;
       y1 = *lum1++;
       y2 = *lum2++;
-      cb = GUINT16_FROM_LE (cb) >> 6;
-      cr = GUINT16_FROM_LE (cr) >> 6;
-      y1 = GUINT16_FROM_LE (y1) >> 6;
-      y2 = GUINT16_FROM_LE (y2) >> 6;
+      cb = GUINT16_FROM_LE (cb) >> 2;
+      cr = GUINT16_FROM_LE (cr) >> 2;
+      y1 = GUINT16_FROM_LE (y1) >> 2;
+      y2 = GUINT16_FROM_LE (y2) >> 2;
 
       *dst_lum1++ = y1;
       *dst_lum2++ = y2;
@@ -2020,8 +2020,8 @@ yuv420p10le_to_yuv444p (AVPicture * dst, const AVPicture * src, int width,
 
       y1 = *lum1++;
       y2 = *lum2++;
-      y1 = GUINT16_FROM_LE (y1) >> 6;
-      y2 = GUINT16_FROM_LE (y2) >> 6;
+      y1 = GUINT16_FROM_LE (y1) >> 2;
+      y2 = GUINT16_FROM_LE (y2) >> 2;
 
       *dst_lum1++ = y1;
       *dst_lum2++ = y2;
@@ -2034,10 +2034,10 @@ yuv420p10le_to_yuv444p (AVPicture * dst, const AVPicture * src, int width,
       cr = *src_cr1++;
       y1 = *lum1++;
       y2 = *lum2++;
-      cb = GUINT16_FROM_LE (cb) >> 6;
-      cr = GUINT16_FROM_LE (cr) >> 6;
-      y1 = GUINT16_FROM_LE (y1) >> 6;
-      y2 = GUINT16_FROM_LE (y2) >> 6;
+      cb = GUINT16_FROM_LE (cb) >> 2;
+      cr = GUINT16_FROM_LE (cr) >> 2;
+      y1 = GUINT16_FROM_LE (y1) >> 2;
+      y2 = GUINT16_FROM_LE (y2) >> 2;
 
       *dst_lum1++ = y1;
       *dst_lum2++ = y2;
@@ -2066,16 +2066,16 @@ yuv420p10le_to_yuv444p (AVPicture * dst, const AVPicture * src, int width,
       cb = *src_cb1++;
       cr = *src_cr1++;
       y1 = *lum1++;
-      cb = GUINT16_FROM_LE (cb) >> 6;
-      cr = GUINT16_FROM_LE (cr) >> 6;
-      y1 = GUINT16_FROM_LE (y1) >> 6;
+      cb = GUINT16_FROM_LE (cb) >> 2;
+      cr = GUINT16_FROM_LE (cr) >> 2;
+      y1 = GUINT16_FROM_LE (y1) >> 2;
 
       *dst_lum1++ = y1;
       *dst_cb1++ = cb;
       *dst_cr1++ = cr;
 
       y1 = *lum1++;
-      y1 = GUINT16_FROM_LE (y1) >> 6;
+      y1 = GUINT16_FROM_LE (y1) >> 2;
 
       *dst_lum1++ = y1;
       *dst_cb1++ = cb >> 6;
@@ -2086,9 +2086,9 @@ yuv420p10le_to_yuv444p (AVPicture * dst, const AVPicture * src, int width,
       cb = *src_cb1++;
       cr = *src_cr1++;
       y1 = *lum1++;
-      cb = GUINT16_FROM_LE (cb) >> 6;
-      cr = GUINT16_FROM_LE (cr) >> 6;
-      y1 = GUINT16_FROM_LE (y1) >> 6;
+      cb = GUINT16_FROM_LE (cb) >> 2;
+      cr = GUINT16_FROM_LE (cr) >> 2;
+      y1 = GUINT16_FROM_LE (y1) >> 2;
       *dst_lum1++ = y1;
       *dst_cb1++ = cb;
       *dst_cr1++ = cr;
@@ -2135,10 +2135,10 @@ yuv444p_to_yuv420p10be (AVPicture * dst, const AVPicture * src, int width,
       cr += *src_cr2++;
       y1 = *lum1++;
       y2 = *lum1++;
-      cb = cb << 4;
-      cr = cr << 4;
-      y1 = y1 << 6;
-      y2 = y2 << 6;
+      cb = cb << 0;
+      cr = cr << 0;
+      y1 = y1 << 2;
+      y2 = y2 << 2;
 
       *dst_lum1++ = GUINT16_TO_BE (y1);
       *dst_lum1++ = GUINT16_TO_BE (y2);
@@ -2147,8 +2147,8 @@ yuv444p_to_yuv420p10be (AVPicture * dst, const AVPicture * src, int width,
 
       y1 = *lum2++;
       y2 = *lum2++;
-      y1 = y1 << 6;
-      y2 = y2 << 6;
+      y1 = y1 << 2;
+      y2 = y2 << 2;
 
       *dst_lum2++ = GUINT16_TO_BE (y1);
       *dst_lum2++ = GUINT16_TO_BE (y2);
@@ -2162,9 +2162,9 @@ yuv444p_to_yuv420p10be (AVPicture * dst, const AVPicture * src, int width,
       cr += *src_cr2++;
       y1 = *lum1++;
 
-      cb = cb << 5;
-      cr = cr << 5;
-      y1 = y1 << 6;
+      cb = cb << 1;
+      cr = cr << 1;
+      y1 = y1 << 2;
 
       *dst_lum1++ = GUINT16_TO_BE (y1);
       *dst_cb1++ = GUINT16_TO_BE (cb);
@@ -2195,10 +2195,10 @@ yuv444p_to_yuv420p10be (AVPicture * dst, const AVPicture * src, int width,
       cr += *src_cr1++;
       y1 = *lum1++;
       y2 = *lum1++;
-      cb = cb << 5;
-      cr = cr << 5;
-      y1 = y1 << 6;
-      y2 = y2 << 6;
+      cb = cb << 1;
+      cr = cr << 1;
+      y1 = y1 << 2;
+      y2 = y2 << 2;
 
       *dst_lum1++ = GUINT16_TO_BE (y1);
       *dst_lum1++ = GUINT16_TO_BE (y2);
@@ -2212,9 +2212,9 @@ yuv444p_to_yuv420p10be (AVPicture * dst, const AVPicture * src, int width,
       cr = *src_cr1++;
       y1 = *lum1++;
 
-      cb = cb << 6;
-      cr = cr << 6;
-      y1 = y1 << 6;
+      cb = cb << 2;
+      cr = cr << 2;
+      y1 = y1 << 2;
 
       *dst_lum1++ = GUINT16_TO_BE (y1);
       *dst_cb1++ = GUINT16_TO_BE (cb);
@@ -2262,10 +2262,10 @@ yuv444p_to_yuv420p10le (AVPicture * dst, const AVPicture * src, int width,
       cr += *src_cr2++;
       y1 = *lum1++;
       y2 = *lum1++;
-      cb = cb << 4;
-      cr = cr << 4;
-      y1 = y1 << 6;
-      y2 = y2 << 6;
+      cb = cb << 0;
+      cr = cr << 0;
+      y1 = y1 << 2;
+      y2 = y2 << 2;
 
       *dst_lum1++ = GUINT16_TO_LE (y1);
       *dst_lum1++ = GUINT16_TO_LE (y2);
@@ -2274,8 +2274,8 @@ yuv444p_to_yuv420p10le (AVPicture * dst, const AVPicture * src, int width,
 
       y1 = *lum2++;
       y2 = *lum2++;
-      y1 = y1 << 6;
-      y2 = y2 << 6;
+      y1 = y1 << 2;
+      y2 = y2 << 2;
 
       *dst_lum2++ = GUINT16_TO_LE (y1);
       *dst_lum2++ = GUINT16_TO_LE (y2);
@@ -2289,9 +2289,9 @@ yuv444p_to_yuv420p10le (AVPicture * dst, const AVPicture * src, int width,
       cr += *src_cr2++;
       y1 = *lum1++;
 
-      cb = cb << 5;
-      cr = cr << 5;
-      y1 = y1 << 6;
+      cb = cb << 1;
+      cr = cr << 1;
+      y1 = y1 << 2;
 
       *dst_lum1++ = GUINT16_TO_LE (y1);
       *dst_cb1++ = GUINT16_TO_LE (cb);
@@ -2322,10 +2322,10 @@ yuv444p_to_yuv420p10le (AVPicture * dst, const AVPicture * src, int width,
       cr += *src_cr1++;
       y1 = *lum1++;
       y2 = *lum1++;
-      cb = cb << 5;
-      cr = cr << 5;
-      y1 = y1 << 6;
-      y2 = y2 << 6;
+      cb = cb << 1;
+      cr = cr << 1;
+      y1 = y1 << 2;
+      y2 = y2 << 2;
 
       *dst_lum1++ = GUINT16_TO_LE (y1);
       *dst_lum1++ = GUINT16_TO_LE (y2);
@@ -2339,9 +2339,9 @@ yuv444p_to_yuv420p10le (AVPicture * dst, const AVPicture * src, int width,
       cr = *src_cr1++;
       y1 = *lum1++;
 
-      cb = cb << 6;
-      cr = cr << 6;
-      y1 = y1 << 6;
+      cb = cb << 2;
+      cr = cr << 2;
+      y1 = y1 << 2;
 
       *dst_lum1++ = GUINT16_TO_LE (y1);
       *dst_cb1++ = GUINT16_TO_LE (cb);
@@ -2378,16 +2378,16 @@ yuv422p10be_to_yuv444p (AVPicture * dst, const AVPicture * src, int width,
       cb = *src_cb1++;
       cr = *src_cr1++;
       y1 = *lum1++;
-      cb = GUINT16_FROM_BE (cb) >> 6;
-      cr = GUINT16_FROM_BE (cr) >> 6;
-      y1 = GUINT16_FROM_BE (y1) >> 6;
+      cb = GUINT16_FROM_BE (cb) >> 2;
+      cr = GUINT16_FROM_BE (cr) >> 2;
+      y1 = GUINT16_FROM_BE (y1) >> 2;
 
       *dst_lum1++ = y1;
       *dst_cb1++ = cb;
       *dst_cr1++ = cr;
 
       y1 = *lum1++;
-      y1 = GUINT16_FROM_BE (y1) >> 6;
+      y1 = GUINT16_FROM_BE (y1) >> 2;
 
       *dst_lum1++ = y1;
       *dst_cb1++ = cb;
@@ -2398,9 +2398,9 @@ yuv422p10be_to_yuv444p (AVPicture * dst, const AVPicture * src, int width,
       cb = *src_cb1++;
       cr = *src_cr1++;
       y1 = *lum1++;
-      cb = GUINT16_FROM_BE (cb) >> 6;
-      cr = GUINT16_FROM_BE (cr) >> 6;
-      y1 = GUINT16_FROM_BE (y1) >> 6;
+      cb = GUINT16_FROM_BE (cb) >> 2;
+      cr = GUINT16_FROM_BE (cr) >> 2;
+      y1 = GUINT16_FROM_BE (y1) >> 2;
 
       *dst_lum1++ = y1;
       *dst_cb1++ = cb;
@@ -2444,16 +2444,16 @@ yuv422p10le_to_yuv444p (AVPicture * dst, const AVPicture * src, int width,
       cb = *src_cb1++;
       cr = *src_cr1++;
       y1 = *lum1++;
-      cb = GUINT16_FROM_LE (cb) >> 6;
-      cr = GUINT16_FROM_LE (cr) >> 6;
-      y1 = GUINT16_FROM_LE (y1) >> 6;
+      cb = GUINT16_FROM_LE (cb) >> 2;
+      cr = GUINT16_FROM_LE (cr) >> 2;
+      y1 = GUINT16_FROM_LE (y1) >> 2;
 
       *dst_lum1++ = y1;
       *dst_cb1++ = cb;
       *dst_cr1++ = cr;
 
       y1 = *lum1++;
-      y1 = GUINT16_FROM_LE (y1) >> 6;
+      y1 = GUINT16_FROM_LE (y1) >> 2;
 
       *dst_lum1++ = y1;
       *dst_cb1++ = cb;
@@ -2464,9 +2464,9 @@ yuv422p10le_to_yuv444p (AVPicture * dst, const AVPicture * src, int width,
       cb = *src_cb1++;
       cr = *src_cr1++;
       y1 = *lum1++;
-      cb = GUINT16_FROM_LE (cb) >> 6;
-      cr = GUINT16_FROM_LE (cr) >> 6;
-      y1 = GUINT16_FROM_LE (y1) >> 6;
+      cb = GUINT16_FROM_LE (cb) >> 2;
+      cr = GUINT16_FROM_LE (cr) >> 2;
+      y1 = GUINT16_FROM_LE (y1) >> 2;
 
       *dst_lum1++ = y1;
       *dst_cb1++ = cb;
@@ -2513,10 +2513,10 @@ yuv444p_to_yuv422p10be (AVPicture * dst, const AVPicture * src, int width,
       cr += *src_cr1++;
       y1 = *lum1++;
       y2 = *lum1++;
-      cb = cb << 5;
-      cr = cr << 5;
-      y1 = y1 << 6;
-      y2 = y2 << 6;
+      cb = cb << 1;
+      cr = cr << 1;
+      y1 = y1 << 2;
+      y2 = y2 << 2;
 
       *dst_lum1++ = GUINT16_TO_BE (y1);
       *dst_lum1++ = GUINT16_TO_BE (y2);
@@ -2530,9 +2530,9 @@ yuv444p_to_yuv422p10be (AVPicture * dst, const AVPicture * src, int width,
       cr = *src_cr1++;
       y1 = *lum1++;
 
-      cb = cb << 6;
-      cr = cr << 6;
-      y1 = y1 << 6;
+      cb = cb << 2;
+      cr = cr << 2;
+      y1 = y1 << 2;
 
       *dst_lum1++ = GUINT16_TO_BE (y1);
       *dst_cb1++ = GUINT16_TO_BE (cb);
@@ -2579,10 +2579,10 @@ yuv444p_to_yuv422p10le (AVPicture * dst, const AVPicture * src, int width,
       cr += *src_cr1++;
       y1 = *lum1++;
       y2 = *lum1++;
-      cb = cb << 5;
-      cr = cr << 5;
-      y1 = y1 << 6;
-      y2 = y2 << 6;
+      cb = cb << 1;
+      cr = cr << 1;
+      y1 = y1 << 2;
+      y2 = y2 << 2;
 
       *dst_lum1++ = GUINT16_TO_LE (y1);
       *dst_lum1++ = GUINT16_TO_LE (y2);
@@ -2596,9 +2596,9 @@ yuv444p_to_yuv422p10le (AVPicture * dst, const AVPicture * src, int width,
       cr = *src_cr1++;
       y1 = *lum1++;
 
-      cb = cb << 6;
-      cr = cr << 6;
-      y1 = y1 << 6;
+      cb = cb << 2;
+      cr = cr << 2;
+      y1 = y1 << 2;
 
       *dst_lum1++ = GUINT16_TO_LE (y1);
       *dst_cb1++ = GUINT16_TO_LE (cb);
@@ -2642,9 +2642,9 @@ yuv444p10be_to_yuv444p (AVPicture * dst, const AVPicture * src, int width,
       cb = *src_cb1++;
       cr = *src_cr1++;
       y1 = *lum1++;
-      cb = GUINT16_FROM_BE (cb) >> 6;
-      cr = GUINT16_FROM_BE (cr) >> 6;
-      y1 = GUINT16_FROM_BE (y1) >> 6;
+      cb = GUINT16_FROM_BE (cb) >> 2;
+      cr = GUINT16_FROM_BE (cr) >> 2;
+      y1 = GUINT16_FROM_BE (y1) >> 2;
 
       *dst_lum1++ = y1;
       *dst_cb1++ = cb;
@@ -2688,9 +2688,14 @@ yuv444p10le_to_yuv444p (AVPicture * dst, const AVPicture * src, int width,
       cb = *src_cb1++;
       cr = *src_cr1++;
       y1 = *lum1++;
-      cb = GUINT16_FROM_LE (cb) >> 6;
-      cr = GUINT16_FROM_LE (cr) >> 6;
-      y1 = GUINT16_FROM_LE (y1) >> 6;
+
+      cb = GUINT16_FROM_LE (cb);
+      cr = GUINT16_FROM_LE (cr);
+      y1 = GUINT16_FROM_LE (y1);
+
+      y1 >>= 2;
+      cb >>= 2;
+      cr >>= 2;
 
       *dst_lum1++ = y1;
       *dst_cb1++ = cb;
@@ -2734,9 +2739,9 @@ yuv444p_to_yuv444p10be (AVPicture * dst, const AVPicture * src, int width,
       cb = *src_cb1++;
       cr = *src_cr1++;
       y1 = *lum1++;
-      cb = cb << 6;
-      cr = cr << 6;
-      y1 = y1 << 6;
+      cb = cb << 2;
+      cr = cr << 2;
+      y1 = y1 << 2;
 
       *dst_lum1++ = GUINT16_TO_BE (y1);
       *dst_cb1++ = GUINT16_TO_BE (cb);
@@ -2780,9 +2785,9 @@ yuv444p_to_yuv444p10le (AVPicture * dst, const AVPicture * src, int width,
       cb = *src_cb1++;
       cr = *src_cr1++;
       y1 = *lum1++;
-      cb = cb << 6;
-      cr = cr << 6;
-      y1 = y1 << 6;
+      cb = cb << 2;
+      cr = cr << 2;
+      y1 = y1 << 2;
 
       *dst_lum1++ = GUINT16_TO_LE (y1);
       *dst_cb1++ = GUINT16_TO_LE (cb);
