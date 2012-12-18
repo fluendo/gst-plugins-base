@@ -35,6 +35,7 @@
 #include "tmplayerparse.h"
 #include "mpl2parse.h"
 #include "qttextparse.h"
+#include "webvttparse.h"
 
 GST_DEBUG_CATEGORY (sub_parse_debug);
 
@@ -61,7 +62,8 @@ static GstStaticPadTemplate sink_templ = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_ALWAYS,
     GST_STATIC_CAPS ("application/x-subtitle; application/x-subtitle-sami; "
         "application/x-subtitle-tmplayer; application/x-subtitle-mpl2; "
-        "application/x-subtitle-dks; application/x-subtitle-qttext")
+        "application/x-subtitle-dks; application/x-subtitle-qttext; "
+        "application/x-subtitle-webvtt")
     );
 #else
 static GstStaticPadTemplate sink_templ = GST_STATIC_PAD_TEMPLATE ("sink",
@@ -69,7 +71,7 @@ static GstStaticPadTemplate sink_templ = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_ALWAYS,
     GST_STATIC_CAPS ("application/x-subtitle; application/x-subtitle-dks; "
         "application/x-subtitle-tmplayer; application/x-subtitle-mpl2; "
-        "application/x-subtitle-qttext")
+        "application/x-subtitle-qttext; application/x-subtitle-webvtt")
     );
 #endif
 
@@ -143,6 +145,9 @@ gst_sub_parse_dispose (GObject * object)
   switch (subparse->parser_type) {
     case GST_SUB_PARSE_FORMAT_QTTEXT:
       qttext_context_deinit (&subparse->state);
+      break;
+    case GST_SUB_PARSE_FORMAT_WEBVTT:
+      webvtt_context_deinit (&subparse->state);
       break;
 #ifndef GST_DISABLE_XML
     case GST_SUB_PARSE_FORMAT_SAMI:
@@ -431,6 +436,8 @@ gst_sub_parse_get_format_description (GstSubParseFormat format)
       return "DKS";
     case GST_SUB_PARSE_FORMAT_QTTEXT:
       return "QTtext";
+    case GST_SUB_PARSE_FORMAT_WEBVTT:
+      return "WebVTT";
     default:
     case GST_SUB_PARSE_FORMAT_UNKNOWN:
       break;
@@ -1346,6 +1353,10 @@ gst_sub_parse_data_format_autodetect (gchar * match_str)
     GST_LOG ("QTtext (time based) format detected");
     return GST_SUB_PARSE_FORMAT_QTTEXT;
   }
+  if (strstr (match_str, "WEBVTT") != NULL) {
+    GST_LOG ("WebVTT (time based) format detected");
+    return GST_SUB_PARSE_FORMAT_WEBVTT;
+  }
 
   GST_DEBUG ("no subtitle format detected");
   return GST_SUB_PARSE_FORMAT_UNKNOWN;
@@ -1402,6 +1413,10 @@ gst_sub_parse_format_autodetect (GstSubParse * self)
     case GST_SUB_PARSE_FORMAT_QTTEXT:
       self->parse_line = parse_qttext;
       qttext_context_init (&self->state);
+      return gst_caps_new_simple ("text/x-pango-markup", NULL);
+    case GST_SUB_PARSE_FORMAT_WEBVTT:
+      self->parse_line = parse_webvtt;
+      webvtt_context_init (&self->state);
       return gst_caps_new_simple ("text/x-pango-markup", NULL);
     case GST_SUB_PARSE_FORMAT_UNKNOWN:
     default:
@@ -1738,6 +1753,10 @@ static GstStaticCaps qttext_caps =
 GST_STATIC_CAPS ("application/x-subtitle-qttext");
 #define QTTEXT_CAPS (gst_static_caps_get (&qttext_caps))
 
+static GstStaticCaps webvtt_caps =
+GST_STATIC_CAPS ("application/x-subtitle-webvtt");
+#define WEBVTT_CAPS (gst_static_caps_get (&webvtt_caps))
+
 static void
 gst_subparse_type_find (GstTypeFind * tf, gpointer private)
 {
@@ -1842,6 +1861,10 @@ gst_subparse_type_find (GstTypeFind * tf, gpointer private)
       GST_DEBUG ("QTtext format detected");
       caps = QTTEXT_CAPS;
       break;
+    case GST_SUB_PARSE_FORMAT_WEBVTT:
+      GST_DEBUG ("WebVTT format detected");
+      caps = WEBVTT_CAPS;
+      break;
     default:
     case GST_SUB_PARSE_FORMAT_UNKNOWN:
       GST_DEBUG ("no subtitle format detected");
@@ -1856,7 +1879,7 @@ static gboolean
 plugin_init (GstPlugin * plugin)
 {
   static const gchar *sub_exts[] =
-      { "srt", "sub", "mpsub", "mdvd", "smi", "txt", "dks", NULL };
+      { "srt", "sub", "mpsub", "mdvd", "smi", "txt", "dks", "webvtt", NULL };
 
   GST_DEBUG_CATEGORY_INIT (sub_parse_debug, "subparse", 0, ".sub parser");
 

@@ -17,7 +17,9 @@ libgstsubparse_la_SOURCES = \
 	mpl2parse.c \
 	mpl2parse.h \
         qttextparse.c \
-        qttextparse.h
+        qttextparse.h \
+        webvttparse.c \
+        webvttparse.h
 
 libgstsubparse_la_CFLAGS = $(GST_CFLAGS) $(GST_BASE_CFLAGS)
 libgstsubparse_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
@@ -32,4 +34,5 @@ noinst_HEADERS = \
 	samiparse.h \
 	tmplayerparse.h \
 	mpl2parse.h \
-        qttextparse.h
+        qttextparse.h \
+        webvttparse.h
