@@ -221,7 +221,7 @@ parse_webvtt (ParserState * state, const gchar * line)
     if (state->buf) {
       ret = webvtt_get_text (state);
       state->start_time = context->start_time;
-
+      state->duration = context->stop_time - context->start_time;
     }
     state->buf = NULL;
 
@@ -231,6 +231,7 @@ parse_webvtt (ParserState * state, const gchar * line)
     if (state->buf) {
       ret = webvtt_get_text (state);
       state->start_time = context->start_time;
+      state->duration = context->stop_time - context->start_time;
     }
     state->buf = NULL;
   } else {
