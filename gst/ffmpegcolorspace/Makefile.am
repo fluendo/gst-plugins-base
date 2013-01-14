@@ -10,7 +10,9 @@ libgstffmpegcolorspace_la_SOURCES = \
 
 libgstffmpegcolorspace_la_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_BASE_CFLAGS) $(GST_CFLAGS) \
 	-Dav_mallocz=ffmpegcolorspace_avmallocz -Dav_strdup=ffmpegcolorspace_avstrdup \
-	-Dav_freep=ffmpegcolorspace_avfreep
+	-Dav_freep=ffmpegcolorspace_avfreep -Dav_free=ffmpegcolorspace_avfree \
+	-Dav_realloc=ffmpegcolorspace_realloc -Dav_malloc=ffmpegcolorspace_avmalloc
+
 libgstffmpegcolorspace_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
 libgstffmpegcolorspace_la_LIBADD = \
 	$(top_builddir)/gst-libs/gst/video/libgstvideo-$(GST_MAJORMINOR).la \
