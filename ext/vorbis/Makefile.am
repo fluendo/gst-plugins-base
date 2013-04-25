@@ -32,7 +32,11 @@ libgstivorbisdec_la_SOURCES = gstivorbisdec.c \
 	gstvorbisdec.c gstvorbisdeclib.c gstvorbiscommon.c
 libgstivorbisdec_la_CFLAGS = \
 	$(GST_PLUGINS_BASE_CFLAGS) $(GST_CFLAGS) \
-	-DTREMOR $(IVORBIS_CFLAGS)
+	-DTREMOR $(IVORBIS_CFLAGS) \
+	-Dgst_vorbis_dec_get_type=gst_ivorbis_dec_get_type \
+	-Dget_copy_sample_func=gst_ivorbis_get_copy_sample_func
+
+
 libgstivorbisdec_la_LIBADD = \
 	$(top_builddir)/gst-libs/gst/tag/libgsttag-@GST_MAJORMINOR@.la \
 	$(top_builddir)/gst-libs/gst/audio/libgstaudio-@GST_MAJORMINOR@.la \
