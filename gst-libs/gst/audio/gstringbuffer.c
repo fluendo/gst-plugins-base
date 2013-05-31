@@ -1394,7 +1394,7 @@ gst_ring_buffer_samples_done (GstRingBuffer * buf)
   g_return_val_if_fail (GST_IS_RING_BUFFER (buf), 0);
 
   /* get the amount of segments we processed */
-  segdone = g_atomic_int_get (&buf->segdone);
+  segdone = g_atomic_int_get (&buf->segdone) - buf->segbase;
 
   /* convert to samples */
   samples = ((guint64) segdone) * buf->samples_per_seg;

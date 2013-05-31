@@ -888,6 +888,7 @@ gst_base_audio_sink_setcaps (GstBaseSink * bsink, GstCaps * caps)
   GstRingBufferSpec *spec;
   GstClockTime now;
   GstClockTime crate_num, crate_denom;
+  guint64 samples_done;
 
   if (!sink->ringbuffer)
     return FALSE;
@@ -905,6 +906,7 @@ gst_base_audio_sink_setcaps (GstBaseSink * bsink, GstCaps * caps)
   gst_ring_buffer_pause (sink->ringbuffer);
   gst_ring_buffer_activate (sink->ringbuffer, FALSE);
   gst_ring_buffer_release (sink->ringbuffer);
+  samples_done = gst_ring_buffer_samples_done (sink->ringbuffer);
 
   GST_DEBUG_OBJECT (sink, "parse caps");
 
@@ -920,6 +922,7 @@ gst_base_audio_sink_setcaps (GstBaseSink * bsink, GstCaps * caps)
   GST_DEBUG_OBJECT (sink, "acquire ringbuffer");
   if (!gst_ring_buffer_acquire (sink->ringbuffer, spec))
     goto acquire_error;
+  gst_ring_buffer_set_sample (sink->ringbuffer, samples_done);
 
   /* We need to resync since the ringbuffer restarted */
   sink->priv->avg_skew = -1;
