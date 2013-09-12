@@ -447,6 +447,7 @@ gst_tag_demux_trim_buffer (GstTagDemux * tagdemux, GstBuffer ** buf_ref)
 
       sub = gst_buffer_create_sub (buf, trim_start, out_size);
       g_return_val_if_fail (sub != NULL, FALSE);
+      GST_BUFFER_TIMESTAMP (sub) = GST_BUFFER_TIMESTAMP (buf);
       gst_buffer_unref (buf);
       *buf_ref = buf = sub;
     } else {
