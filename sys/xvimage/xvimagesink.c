@@ -2081,6 +2081,49 @@ gst_xvimagesink_getcaps (GstBaseSink * bsink)
           (xvimagesink)));
 }
 
+static void
+gst_xvimagesink_update_roi (GstXvImageSink * xvimagesink, const GValue * disp_reg)
+{
+  GstVideoSink * vsink;
+  gint roiw;
+  gint roih;
+
+  if (disp_reg != NULL) {
+    xvimagesink->disp_x = g_value_get_int (gst_value_array_get_value (disp_reg, 0));
+    xvimagesink->disp_y = g_value_get_int (gst_value_array_get_value (disp_reg, 1));
+    xvimagesink->disp_width = g_value_get_int (gst_value_array_get_value (disp_reg, 2));
+    xvimagesink->disp_height = g_value_get_int (gst_value_array_get_value (disp_reg, 3));
+  } else {
+    xvimagesink->disp_x = 0;
+    xvimagesink->disp_y = 0;
+    xvimagesink->disp_width = xvimagesink->video_width;
+    xvimagesink->disp_height = xvimagesink->video_height;
+  }
+
+  /* Initialize with default values */
+  xvimagesink->disp_width = xvimagesink->disp_width ? xvimagesink->disp_width : xvimagesink->video_width;
+  xvimagesink->disp_height = xvimagesink->disp_height ? xvimagesink->disp_height : xvimagesink->video_height;
+
+  /* If supported, apply ROI from base class, this is cumulative with the
+   * ROI provided from caps. */
+
+  /* On the base class a width/height of ROI set to zero means display all */
+  vsink = GST_VIDEO_SINK (xvimagesink);
+  roiw = vsink->roi.w ? vsink->roi.w : xvimagesink->disp_width;
+  roih = vsink->roi.w ? vsink->roi.h : xvimagesink->disp_height;
+
+  xvimagesink->disp_x += vsink->roi.x;
+  xvimagesink->disp_y += vsink->roi.y;
+  xvimagesink->disp_width = roiw;
+  xvimagesink->disp_height = roih;
+}
+
+static void
+gst_xvimagesink_roi_changed (GstXvImageSink * xvimagesink)
+{
+  gst_xvimagesink_update_roi (xvimagesink, NULL);
+}
+
 static gboolean
 gst_xvimagesink_setcaps (GstBaseSink * bsink, GstCaps * caps)
 {
@@ -2089,12 +2132,9 @@ gst_xvimagesink_setcaps (GstBaseSink * bsink, GstCaps * caps)
   guint32 im_format = 0;
   gboolean ret;
   gint video_width, video_height;
-  gint disp_x, disp_y;
-  gint disp_width, disp_height;
   gint video_par_n, video_par_d;        /* video's PAR */
   gint display_par_n, display_par_d;    /* display's PAR */
   const GValue *caps_par;
-  const GValue *caps_disp_reg;
   const GValue *fps;
   guint num, den;
 
@@ -2148,28 +2188,12 @@ gst_xvimagesink_setcaps (GstBaseSink * bsink, GstCaps * caps)
     display_par_d = 1;
   }
 
-  /* get the display region */
-  caps_disp_reg = gst_structure_get_value (structure, "display-region");
-  if (caps_disp_reg) {
-    disp_x = g_value_get_int (gst_value_array_get_value (caps_disp_reg, 0));
-    disp_y = g_value_get_int (gst_value_array_get_value (caps_disp_reg, 1));
-    disp_width = g_value_get_int (gst_value_array_get_value (caps_disp_reg, 2));
-    disp_height =
-        g_value_get_int (gst_value_array_get_value (caps_disp_reg, 3));
-  } else {
-    disp_x = disp_y = 0;
-    disp_width = video_width;
-    disp_height = video_height;
-  }
+  /* Update ROI */
+  gst_xvimagesink_update_roi (xvimagesink, gst_structure_get_value (structure, "display-region"));
 
   if (!gst_video_calculate_display_ratio (&num, &den, video_width,
           video_height, video_par_n, video_par_d, display_par_n, display_par_d))
     goto no_disp_ratio;
-
-  xvimagesink->disp_x = disp_x;
-  xvimagesink->disp_y = disp_y;
-  xvimagesink->disp_width = disp_width;
-  xvimagesink->disp_height = disp_height;
 
   GST_DEBUG_OBJECT (xvimagesink,
       "video width/height: %dx%d, calculated display ratio: %d/%d",
@@ -3535,6 +3559,10 @@ gst_xvimagesink_init (GstXvImageSink * xvimagesink,
    */
   xvimagesink->colorkey = (8 << 16) | (8 << 8) | 16;
   xvimagesink->draw_borders = TRUE;
+
+#ifdef GST_VIDEO_SINK_HAS_ROI
+  g_signal_connect (G_OBJECT (xvimagesink), "notify::roi", G_CALLBACK (gst_xvimagesink_roi_changed), xvimagesink);
+#endif
 }
 
 static void
