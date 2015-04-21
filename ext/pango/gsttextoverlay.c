@@ -1096,6 +1096,8 @@ gst_text_overlay_src_event (GstPad * pad, GstEvent * event)
       GST_TEXT_OVERLAY_LOCK (overlay);
       overlay->video_flushing = TRUE;
       overlay->text_flushing = TRUE;
+      overlay->last_start = GST_CLOCK_TIME_NONE;
+      overlay->last_stop = GST_CLOCK_TIME_NONE;
       gst_text_overlay_pop_text (overlay);
       GST_TEXT_OVERLAY_UNLOCK (overlay);
 
@@ -1696,6 +1698,11 @@ gst_text_overlay_push_frame (GstTextOverlay * overlay, GstBuffer * video_frame)
     }
   }
 
+  if (overlay->no_timestamp) {
+    GST_BUFFER_TIMESTAMP (video_frame) = GST_CLOCK_TIME_NONE;
+    GST_BUFFER_DURATION (video_frame) = GST_CLOCK_TIME_NONE;
+  }
+
   return gst_pad_push (overlay->srcpad, video_frame);
 }
 
@@ -1754,6 +1761,8 @@ gst_text_overlay_text_event (GstPad * pad, GstEvent * event)
       gint64 cur, stop, time;
 
       overlay->text_eos = FALSE;
+      overlay->last_start = GST_CLOCK_TIME_NONE;
+      overlay->last_stop = GST_CLOCK_TIME_NONE;
 
       gst_event_parse_new_segment_full (event, &update, &rate, &applied_rate,
           &fmt, &cur, &stop, &time);
@@ -1785,6 +1794,8 @@ gst_text_overlay_text_event (GstPad * pad, GstEvent * event)
       GST_INFO_OBJECT (overlay, "text flush stop");
       overlay->text_flushing = FALSE;
       overlay->text_eos = FALSE;
+      overlay->last_start = GST_CLOCK_TIME_NONE;
+      overlay->last_stop = GST_CLOCK_TIME_NONE;
       gst_text_overlay_pop_text (overlay);
       gst_segment_init (&overlay->text_segment, GST_FORMAT_TIME);
       GST_TEXT_OVERLAY_UNLOCK (overlay);
@@ -2044,16 +2055,25 @@ gst_text_overlay_video_chain (GstPad * pad, GstBuffer * buffer)
   overlay = GST_TEXT_OVERLAY (GST_PAD_PARENT (pad));
   klass = GST_TEXT_OVERLAY_GET_CLASS (overlay);
 
-  if (!GST_BUFFER_TIMESTAMP_IS_VALID (buffer))
-    goto missing_timestamp;
+  if (GST_BUFFER_TIMESTAMP_IS_VALID (buffer)) {
+    start = GST_BUFFER_TIMESTAMP (buffer);
 
-  /* ignore buffers that are outside of the current segment */
-  start = GST_BUFFER_TIMESTAMP (buffer);
-
-  if (!GST_BUFFER_DURATION_IS_VALID (buffer)) {
-    stop = GST_CLOCK_TIME_NONE;
+    if (!GST_BUFFER_DURATION_IS_VALID (buffer)) {
+      stop = GST_CLOCK_TIME_NONE;
+    } else {
+      stop = start + GST_BUFFER_DURATION (buffer);
+    }
+    overlay->no_timestamp = FALSE;
+    overlay->last_start = start;
+    overlay->last_stop = stop;
   } else {
-    stop = start + GST_BUFFER_DURATION (buffer);
+    if (GST_CLOCK_TIME_IS_VALID (overlay->last_start)) {
+      start = overlay->last_start;
+      stop = overlay->last_stop;
+      overlay->no_timestamp = TRUE;
+    } else {
+      goto missing_timestamp;
+    }
   }
 
   GST_LOG_OBJECT (overlay, "%" GST_SEGMENT_FORMAT "  BUFFER: ts=%"
@@ -2354,6 +2374,8 @@ gst_text_overlay_change_state (GstElement * element, GstStateChange transition)
       GST_TEXT_OVERLAY_LOCK (overlay);
       overlay->text_flushing = TRUE;
       overlay->video_flushing = TRUE;
+      overlay->last_start = GST_CLOCK_TIME_NONE;
+      overlay->last_stop = GST_CLOCK_TIME_NONE;
       /* pop_text will broadcast on the GCond and thus also make the video
        * chain exit if it's waiting for a text buffer */
       gst_text_overlay_pop_text (overlay);

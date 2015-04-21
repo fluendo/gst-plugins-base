@@ -111,6 +111,10 @@ struct _GstTextOverlay {
     gboolean                    text_flushing;
     gboolean                    text_eos;
 
+    GstClockTime                last_start;
+    GstClockTime                last_stop;
+    gboolean                    no_timestamp;
+
     GMutex                     *lock;
     GCond                      *cond;  /* to signal removal of a queued text
                                      * buffer, arrival of a text buffer,
