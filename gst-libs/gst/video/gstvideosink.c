@@ -40,9 +40,12 @@
 
 #include "gstvideosink.h"
 
+#include "gstvaluerectangle.h"
+
 enum
 {
-  PROP_SHOW_PREROLL_FRAME = 1
+  PROP_SHOW_PREROLL_FRAME = 1,
+  PROP_REGION_OF_INTEREST
 };
 
 #define DEFAULT_SHOW_PREROLL_FRAME TRUE
@@ -158,6 +161,11 @@ gst_video_sink_class_init (GstVideoSinkClass * klass)
           DEFAULT_SHOW_PREROLL_FRAME,
           G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
+  g_object_class_install_property (gobject_class, PROP_REGION_OF_INTEREST,
+      gst_param_spec_rectangle ("roi", "Region Of Interest",
+          "The region of interest rectangle, (0,0,0,0) complete frame",
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
   basesink_class->render = GST_DEBUG_FUNCPTR (gst_video_sink_show_frame);
   basesink_class->preroll =
       GST_DEBUG_FUNCPTR (gst_video_sink_show_preroll_frame);
@@ -235,6 +243,10 @@ gst_video_sink_set_property (GObject * object, guint prop_id,
       g_atomic_int_set (&vsink->priv->show_preroll_frame,
           g_value_get_boolean (value));
       break;
+    case PROP_REGION_OF_INTEREST:
+      gst_value_get_rectangle (value, &vsink->roi.x, &vsink->roi.y,
+          &vsink->roi.w, &vsink->roi.h);
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -253,6 +265,10 @@ gst_video_sink_get_property (GObject * object, guint prop_id,
     case PROP_SHOW_PREROLL_FRAME:
       g_value_set_boolean (value,
           g_atomic_int_get (&vsink->priv->show_preroll_frame));
+      break;
+    case PROP_REGION_OF_INTEREST:
+      gst_value_set_rectangle (value, vsink->roi.x, vsink->roi.y,
+          vsink->roi.w, vsink->roi.h);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -279,6 +295,8 @@ gst_video_sink_get_type (void)
       0,
       (GInstanceInitFunc) gst_video_sink_init,
     };
+
+    gst_value_rectangle_register ();
 
     videosink_type = g_type_register_static (GST_TYPE_BASE_SINK,
         "GstVideoSink", &videosink_info, 0);

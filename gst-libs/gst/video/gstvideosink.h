@@ -23,6 +23,8 @@
 #ifndef __GST_VIDEO_SINK_H__
 #define __GST_VIDEO_SINK_H__
 
+#define GST_VIDEO_SINK_HAS_ROI
+
 #include <gst/gst.h>
 #include <gst/base/gstbasesink.h>
 
@@ -95,6 +97,8 @@ struct _GstVideoSink {
 
   /*< public >*/
   gint width, height;
+
+  GstVideoRectangle roi;
 
   /*< private >*/
   GstVideoSinkPrivate *priv;
