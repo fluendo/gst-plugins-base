@@ -2549,6 +2549,8 @@ gst_uri_decode_bin_change_state (GstElement * element,
       GST_DEBUG ("ready to paused");
       if (ret == GST_STATE_CHANGE_FAILURE)
         goto setup_failed;
+      if (decoder->async_pending) 
+        ret = GST_STATE_CHANGE_ASYNC;
       break;
     case GST_STATE_CHANGE_PAUSED_TO_READY:
       GST_DEBUG ("paused to ready");
