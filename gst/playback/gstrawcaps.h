@@ -34,7 +34,8 @@ G_BEGIN_DECLS
     "text/plain; " \
     "text/x-pango-markup; " \
     "video/x-dvd-subpicture; " \
-    "subpicture/x-pgs"
+    "subpicture/x-pgs;" \
+    "subpicture/x-dvb"
 
 G_END_DECLS
 
