@@ -888,7 +888,7 @@ gst_base_audio_sink_setcaps (GstBaseSink * bsink, GstCaps * caps)
   GstRingBufferSpec *spec;
   GstClockTime now;
   GstClockTime crate_num, crate_denom;
-  guint64 samples_done, time_done;
+  guint64 samples_done, time_done = 0;
 
   if (!sink->ringbuffer)
     return FALSE;
@@ -907,8 +907,9 @@ gst_base_audio_sink_setcaps (GstBaseSink * bsink, GstCaps * caps)
   gst_ring_buffer_activate (sink->ringbuffer, FALSE);
   gst_ring_buffer_release (sink->ringbuffer);
   samples_done = gst_ring_buffer_samples_done (sink->ringbuffer);
-  time_done = gst_util_uint64_scale_int (samples_done, GST_SECOND,
-      sink->ringbuffer->spec.rate);
+  if (sink->ringbuffer->spec.rate)
+    time_done = gst_util_uint64_scale_int (samples_done, GST_SECOND,
+        sink->ringbuffer->spec.rate);
 
   GST_DEBUG_OBJECT (sink, "samples done %" G_GINT64_FORMAT " on rate %d"
       " are converted to time done %" GST_TIME_FORMAT, samples_done,
