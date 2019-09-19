@@ -2060,7 +2060,7 @@ gst_ring_buffer_advance (GstRingBuffer * buf, guint advance)
 
   if (buf->segdone == g_atomic_int_get (&buf->segtodo)) {
     GST_DEBUG ("slowing down reading for 20ms to let ringbuffer accumulate data");
-    g_usleep (20 * 1000);
+//    g_usleep (20 * 1000);
   }
 }
 
