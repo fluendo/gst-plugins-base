@@ -1547,6 +1547,22 @@ no_start:
   }
 }
 
+
+static void
+gst_ring_buffer_signal_waiter (GstRingBuffer * buf)
+{
+  /* the lock is already taken when the waiting flag is set,
+   * we grab the lock as well to make sure the waiter is actually
+   * waiting for the signal */
+  if (g_atomic_int_compare_and_exchange (&buf->waiting, 1, 0)) {
+    GST_OBJECT_LOCK (buf);
+    GST_DEBUG_OBJECT (buf, "signal waiter");
+    GST_RING_BUFFER_SIGNAL (buf);
+    GST_OBJECT_UNLOCK (buf);
+  }
+}
+
+
 #define FWD_SAMPLES(s,se,d,de)		 	\
 G_STMT_START {					\
   /* no rate conversion */			\
@@ -1765,19 +1781,6 @@ not_started:
   }
 }
 
-static void
-gst_ring_buffer_signal_waiter (GstRingBuffer * buf)
-{
-  /* the lock is already taken when the waiting flag is set,
-   * we grab the lock as well to make sure the waiter is actually
-   * waiting for the signal */
-  if (g_atomic_int_compare_and_exchange (&buf->waiting, 1, 0)) {
-    GST_OBJECT_LOCK (buf);
-    GST_DEBUG_OBJECT (buf, "signal waiter");
-    GST_RING_BUFFER_SIGNAL (buf);
-    GST_OBJECT_UNLOCK (buf);
-  }
-}
 
 /**
  * gst_ring_buffer_commit_full:
