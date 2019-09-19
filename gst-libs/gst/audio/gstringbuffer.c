@@ -1764,6 +1764,20 @@ not_started:
   }
 }
 
+static void
+gst_ring_buffer_signal_waiter (GstRingBuffer * buf)
+{
+  /* the lock is already taken when the waiting flag is set,
+   * we grab the lock as well to make sure the waiter is actually
+   * waiting for the signal */
+  if (g_atomic_int_compare_and_exchange (&buf->waiting, 1, 0)) {
+    GST_OBJECT_LOCK (buf);
+    GST_DEBUG_OBJECT (buf, "signal waiter");
+    GST_RING_BUFFER_SIGNAL (buf);
+    GST_OBJECT_UNLOCK (buf);
+  }
+}
+
 /**
  * gst_ring_buffer_commit_full:
  * @buf: the #GstRingBuffer to commit
@@ -2001,7 +2015,8 @@ gst_ring_buffer_prepare_read (GstRingBuffer * buf, gint * segment,
   /* If there's no data to read, because ringbuffer is "empty" -
    * if reading from rb is a bit faster then writing to it, for example,
    * then we must wait until the segment becomes available. */
-  GST_LOG ("segdone = %d, segtodo = %d", segdone, g_atomic_int_get (&buf->segtodo));
+  GST_LOG ("segdone = %d, segtodo = %d", segdone,
+      g_atomic_int_get (&buf->segtodo));
   if (segdone > g_atomic_int_get (&buf->segtodo)) {
     GST_DEBUG ("No memory to read, waiting for segment..");
     wait_segment (buf);
@@ -2023,19 +2038,6 @@ gst_ring_buffer_prepare_read (GstRingBuffer * buf, gint * segment,
   return TRUE;
 }
 
-static void
-gst_ring_buffer_signal_waiter (GstRingBuffer * buf)
-{
-  /* the lock is already taken when the waiting flag is set,
-   * we grab the lock as well to make sure the waiter is actually
-   * waiting for the signal */
-  if (g_atomic_int_compare_and_exchange (&buf->waiting, 1, 0)) {
-    GST_OBJECT_LOCK (buf);
-    GST_DEBUG_OBJECT (buf, "signal waiter");
-    GST_RING_BUFFER_SIGNAL (buf);
-    GST_OBJECT_UNLOCK (buf);
-  }
-}
 
 /**
  * gst_ring_buffer_advance:
