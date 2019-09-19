@@ -1716,6 +1716,7 @@ default_commit (GstRingBuffer * buf, guint64 * sample,
         /* we need to drop one segment at a time, pretend we wrote a
          * segment. */
         //skip = TRUE;
+        g_abort ();
         break;
       }
 
