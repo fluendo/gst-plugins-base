@@ -1749,6 +1749,7 @@ default_commit (GstRingBuffer * buf, guint64 * sample,
     g_atomic_int_set (&buf->segtodo, writeseg);
     writeseg++;
     sampleoff = 0;
+    gst_ring_buffer_signal_waiter (buf);
   }
   /* we consumed all samples here */
   data = data_end + bps;
@@ -1829,7 +1830,7 @@ gst_ring_buffer_commit_full (GstRingBuffer * buf, guint64 * sample,
 
   if (G_LIKELY (rclass->commit)) {
     res = rclass->commit (buf, sample, data, in_samples, out_samples, accum);
-    gst_ring_buffer_signal_waiter (buf);
+    //    gst_ring_buffer_signal_waiter (buf);
   }
 
   return res;
@@ -2015,13 +2016,16 @@ gst_ring_buffer_prepare_read (GstRingBuffer * buf, gint * segment,
   /* If there's no data to read, because ringbuffer is "empty" -
    * if reading from rb is a bit faster then writing to it, for example,
    * then we must wait until the segment becomes available. */
-  GST_LOG ("segdone = %d, segtodo = %d", segdone,
-      g_atomic_int_get (&buf->segtodo));
-  if (segdone >= g_atomic_int_get (&buf->segtodo)) {
-    GST_DEBUG ("No memory to read, waiting for ringbuffer to accumulate 10 segments.");
-    //    while (segdone > g_atomic_int_get (&buf->segtodo) + 5)
+  {
+    gint segtodo =  g_atomic_int_get (&buf->segtodo);
+    GST_LOG ("segdone = %d, segtodo = %d", segdone,
+       segtodo);
+    if (segtodo && segdone >= segtodo) {
+      GST_DEBUG ("No memory to read, waiting for ringbuffer to accumulate 10 segments.");
+      //    while (segdone > g_atomic_int_get (&buf->segtodo) + 5)
       wait_segment (buf);
-    GST_DEBUG ("Unblocked after waiting for segment");
+      GST_DEBUG ("Unblocked after waiting for segment");
+    }
   }
 
   *segment = segdone % buf->spec.segtotal;
@@ -2058,11 +2062,6 @@ gst_ring_buffer_advance (GstRingBuffer * buf, guint advance)
   /* update counter */
   g_atomic_int_add (&buf->segdone, advance);
   gst_ring_buffer_signal_waiter (buf);
-
-  if (buf->segdone == g_atomic_int_get (&buf->segtodo)) {
-    GST_DEBUG ("slowing down reading for 20ms to let ringbuffer accumulate data");
-//    g_usleep (20 * 1000);
-  }
 }
 
 /**
