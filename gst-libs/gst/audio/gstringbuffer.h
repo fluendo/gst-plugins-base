@@ -318,6 +318,7 @@ struct _GstRingBuffer {
 
   /*< public >*/ /* ATOMIC */
   gint                   state;
+  gint                   segtodo;
   gint                   segdone;
   gint                   segbase;
   gint                   waiting;
