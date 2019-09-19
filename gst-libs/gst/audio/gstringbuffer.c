@@ -2017,7 +2017,7 @@ gst_ring_buffer_prepare_read (GstRingBuffer * buf, gint * segment,
    * then we must wait until the segment becomes available. */
   GST_LOG ("segdone = %d, segtodo = %d", segdone,
       g_atomic_int_get (&buf->segtodo));
-  if (segdone > g_atomic_int_get (&buf->segtodo)) {
+  if (segdone >= g_atomic_int_get (&buf->segtodo)) {
     GST_DEBUG ("No memory to read, waiting for segment..");
     wait_segment (buf);
     GST_DEBUG ("Unblocked after waiting for segment");
