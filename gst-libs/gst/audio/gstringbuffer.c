@@ -2019,8 +2019,8 @@ gst_ring_buffer_prepare_read (GstRingBuffer * buf, gint * segment,
       g_atomic_int_get (&buf->segtodo));
   if (segdone >= g_atomic_int_get (&buf->segtodo)) {
     GST_DEBUG ("No memory to read, waiting for ringbuffer to accumulate 10 segments.");
-    //wait_segment (buf);
-    usleep (10 * 1000);
+    while (segdone > g_atomic_int_get (&buf->segtodo) + 5)
+      wait_segment (buf);
     GST_DEBUG ("Unblocked after waiting for segment");
   }
 
