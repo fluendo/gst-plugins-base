@@ -1763,8 +1763,8 @@ default_commit (GstRingBuffer * buf, guint64 * sample,
     }
 
     /* for the next iteration we write to the next segment at the beginning. */
-    g_atomic_int_set (&buf->segtodo, writeseg);
     writeseg++;
+    g_atomic_int_set (&buf->segtodo, writeseg);
     sampleoff = 0;
     gst_ring_buffer_signal_waiter (buf);
   }
