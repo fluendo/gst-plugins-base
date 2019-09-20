@@ -2024,7 +2024,7 @@ gst_ring_buffer_prepare_read (GstRingBuffer * buf, gint * segment,
     gint segtodo =  g_atomic_int_get (&buf->segtodo);
     GST_LOG ("segdone = %d, segtodo = %d", segdone,
        segtodo);
-    while (segtodo && segdone + 2 >= g_atomic_int_get (&buf->segtodo)) {
+    while (segtodo && segdone + 1 >= g_atomic_int_get (&buf->segtodo)) {
       GST_DEBUG ("No memory to read, waiting for ringbuffer to accumulate 2 segments.");
       //    while (segdone > g_atomic_int_get (&buf->segtodo) + 5)
       wait_segment (buf);
