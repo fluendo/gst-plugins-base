@@ -2020,6 +2020,7 @@ gst_ring_buffer_prepare_read (GstRingBuffer * buf, gint * segment,
   /* If there's no data to read, because ringbuffer is "empty" -
    * if reading from rb is a bit faster then writing to it, for example,
    * then we must wait until the segment becomes available. */
+#if 0
   {
     gint segtodo =  g_atomic_int_get (&buf->segtodo);
     GST_LOG ("segdone = %d, segtodo = %d", segdone,
@@ -2031,6 +2032,7 @@ gst_ring_buffer_prepare_read (GstRingBuffer * buf, gint * segment,
       GST_DEBUG ("Unblocked after waiting for segment");
     }
   }
+#endif
 
   *segment = segdone % buf->spec.segtotal;
   *len = buf->spec.segsize;
