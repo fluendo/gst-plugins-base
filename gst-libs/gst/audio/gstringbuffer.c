@@ -1712,7 +1712,7 @@ default_commit (GstRingBuffer * buf, guint64 * sample,
           segdone, writeseg, sampleoff, diff, segtotal, segsize, buf->segbase);
 
       /* segment too far ahead, writer too slow, we need to drop, hopefully UNLIKELY */
-      if (G_UNLIKELY (diff < 0)) {
+      if (G_UNLIKELY (diff <= 0)) {
         /* we need to drop one segment at a time, pretend we wrote a
          * segment. */
         //skip = TRUE;
