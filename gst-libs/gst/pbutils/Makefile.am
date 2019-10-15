@@ -86,7 +86,7 @@ GstPbutils-@GST_MAJORMINOR@.gir: $(INTROSPECTION_SCANNER) libgstpbutils-@GST_MAJ
 		--library-path=`$(PKG_CONFIG) --variable=libdir gstreamer-@GST_MAJORMINOR@` \
 		--library=gstreamer-@GST_MAJORMINOR@ \
 		--include=Gst-@GST_MAJORMINOR@ \
-		--libtool="$(top_builddir)/libtool" \
+		--libtool="sh $(top_builddir)/libtool" \
 		--pkg gstreamer-@GST_MAJORMINOR@ \
 		--pkg-export gstreamer-pbutils-@GST_MAJORMINOR@ \
 		--add-init-section="gst_init(NULL,NULL);" \
