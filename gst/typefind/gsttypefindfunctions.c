@@ -4457,7 +4457,7 @@ plugin_init (GstPlugin * plugin)
   static const gchar *mpeg_video_exts[] = { "mpv", "mpeg", "mpg", NULL };
   static const gchar *mpeg_ts_exts[] = { "ts", "mts", NULL };
   static const gchar *ogg_exts[] = { "anx", "ogg", "ogm", NULL };
-  static const gchar *qt_exts[] = { "mov", NULL };
+  static const gchar *qt_exts[] = { "mov", "mp4", "fmp4", "m4s", NULL };
   static const gchar *qtif_exts[] = { "qif", "qtif", "qti", NULL };
   static const gchar *mj2_exts[] = { "mj2", NULL };
   static const gchar *jp2_exts[] = { "jp2", NULL };
@@ -4597,7 +4597,7 @@ plugin_init (GstPlugin * plugin)
       GSM_CAPS, NULL, NULL);
   TYPE_FIND_REGISTER (plugin, "video/mpeg-sys", GST_RANK_PRIMARY,
       mpeg_sys_type_find, mpeg_sys_exts, MPEG_SYS_CAPS, NULL, NULL);
-  TYPE_FIND_REGISTER (plugin, "video/mpegts", GST_RANK_PRIMARY,
+  TYPE_FIND_REGISTER (plugin, "video/mpegts", GST_RANK_PRIMARY - 1,
       mpeg_ts_type_find, mpeg_ts_exts, MPEGTS_CAPS, NULL, NULL);
   TYPE_FIND_REGISTER (plugin, "application/ogg", GST_RANK_PRIMARY,
       ogganx_type_find, ogg_exts, OGGANX_CAPS, NULL, NULL);
@@ -4618,7 +4618,7 @@ plugin_init (GstPlugin * plugin)
       m4a_exts, M4A_CAPS, NULL, NULL);
   TYPE_FIND_REGISTER (plugin, "application/x-3gp", GST_RANK_PRIMARY,
       q3gp_type_find, q3gp_exts, Q3GP_CAPS, NULL, NULL);
-  TYPE_FIND_REGISTER (plugin, "video/quicktime", GST_RANK_SECONDARY,
+  TYPE_FIND_REGISTER (plugin, "video/quicktime", GST_RANK_PRIMARY,
       qt_type_find, qt_exts, QT_CAPS, NULL, NULL);
   TYPE_FIND_REGISTER (plugin, "image/x-quicktime", GST_RANK_SECONDARY,
       qtif_type_find, qtif_exts, QTIF_CAPS, NULL, NULL);
