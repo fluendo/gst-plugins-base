@@ -166,6 +166,7 @@ gst_ffmpegcsp_transform_caps (GstBaseTransform * btrans,
   tmp = gst_ffmpegcsp_caps_remove_format_info (caps);
   tmp2 = gst_caps_intersect (tmp, template);
   gst_caps_unref (tmp);
+  gst_caps_unref (template);
   tmp = tmp2;
 
   /* Now move alpha formats to the beginning if caps is an alpha format
