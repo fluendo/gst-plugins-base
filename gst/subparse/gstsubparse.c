@@ -56,24 +56,16 @@ gst_sub_parse_get_property (GObject * object, guint prop_id,
     GValue * value, GParamSpec * pspec);
 
 
+static GstStaticPadTemplate sink_templ = GST_STATIC_PAD_TEMPLATE ("sink",
+    GST_PAD_SINK,
+    GST_PAD_ALWAYS,
+    GST_STATIC_CAPS ("application/x-subtitle; application/x-subtitle-tmplayer; "
+        "application/x-subtitle-mpl2; application/x-subtitle-dks; "
+        "application/x-subtitle-qttext; application/x-subtitle-webvtt; "
 #ifndef GST_DISABLE_XML
-static GstStaticPadTemplate sink_templ = GST_STATIC_PAD_TEMPLATE ("sink",
-    GST_PAD_SINK,
-    GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("application/x-subtitle; application/x-subtitle-sami; "
-        "application/x-subtitle-tmplayer; application/x-subtitle-mpl2; "
-        "application/x-subtitle-dks; application/x-subtitle-qttext; "
-        "application/x-subtitle-webvtt")
-    );
-#else
-static GstStaticPadTemplate sink_templ = GST_STATIC_PAD_TEMPLATE ("sink",
-    GST_PAD_SINK,
-    GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("application/x-subtitle; application/x-subtitle-dks; "
-        "application/x-subtitle-tmplayer; application/x-subtitle-mpl2; "
-        "application/x-subtitle-qttext; application/x-subtitle-webvtt")
-    );
+        "application/x-subtitle-sami; "
 #endif
+        "text/x-subrip-muxed"));
 
 static GstStaticPadTemplate src_templ = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
@@ -420,6 +412,7 @@ gst_sub_parse_get_format_description (GstSubParseFormat format)
   switch (format) {
     case GST_SUB_PARSE_FORMAT_MDVDSUB:
       return "MicroDVD";
+    case GST_SUB_PARSE_FORMAT_SUBRIP_MUXED:
     case GST_SUB_PARSE_FORMAT_SUBRIP:
       return "SubRip";
     case GST_SUB_PARSE_FORMAT_MPSUB:
@@ -565,25 +558,34 @@ get_next_line (GstSubParse * self)
   char *line = NULL;
   const char *line_end;
   int line_len;
-  gboolean have_r = FALSE;
+  gint erase_len = 1;
 
   line_end = strchr (self->textbuf->str, '\n');
 
   if (!line_end) {
     /* end-of-line not found; return for more data */
-    return NULL;
+    if (self->parser_type == GST_SUB_PARSE_FORMAT_SUBRIP_MUXED) {
+      /* Quit loop if adaptor is empty */
+      if (self->textbuf->len == 0) {
+        return NULL;
+      }
+
+      line_end = self->textbuf->str + self->textbuf->len;
+      erase_len = 0;
+    } else {
+      return NULL;
+    }
   }
 
   /* get rid of '\r' */
   if (line_end != self->textbuf->str && *(line_end - 1) == '\r') {
     line_end--;
-    have_r = TRUE;
+    erase_len = 2;
   }
 
   line_len = line_end - self->textbuf->str;
   line = g_strndup (self->textbuf->str, line_len);
-  self->textbuf = g_string_erase (self->textbuf, 0,
-      line_len + (have_r ? 2 : 1));
+  self->textbuf = g_string_erase (self->textbuf, 0, line_len + erase_len);
   return line;
 }
 
@@ -910,6 +912,19 @@ parse_subrip_time (const gchar * ts_string, GstClockTime * t)
 
   *t = ((hour * 3600) + (min * 60) + sec) * GST_SECOND + msec * GST_MSECOND;
   return TRUE;
+}
+
+static gchar *
+parse_subrip_muxed (ParserState * state, const gchar * line)
+{
+  gchar *ret;
+
+  ret = g_strdup (line);
+  subrip_unescape_formatting (ret);
+  subrip_remove_unhandled_tags (ret);
+  strip_trailing_newlines (ret);
+  subrip_fix_up_markup (&ret);
+  return ret;
 }
 
 static gchar *
@@ -1437,7 +1452,10 @@ feed_textbuf (GstSubParse * self, GstBuffer * buf)
   discont = GST_BUFFER_IS_DISCONT (buf);
 
   if (GST_BUFFER_OFFSET_IS_VALID (buf) &&
-      GST_BUFFER_OFFSET (buf) != self->offset) {
+      GST_BUFFER_OFFSET (buf) != self->offset &&
+      /* Muxed subrip has offsets from the demuxer, so they are never
+       * continuous */
+      self->parser_type != GST_SUB_PARSE_FORMAT_SUBRIP_MUXED) {
     self->offset = GST_BUFFER_OFFSET (buf);
     discont = TRUE;
   }
@@ -1481,15 +1499,11 @@ handle_buffer (GstSubParse * self, GstBuffer * buf)
   GstFlowReturn ret = GST_FLOW_OK;
   GstCaps *caps = NULL;
   gchar *line, *subtitle;
+  GstClockTime input_timestamp;
+  GstClockTime input_duration;
 
-  if (self->first_buffer) {
-    self->detected_encoding =
-        detect_encoding ((gchar *) GST_BUFFER_DATA (buf),
-        GST_BUFFER_SIZE (buf));
-    self->first_buffer = FALSE;
-    self->state.fps_n = self->fps_n;
-    self->state.fps_d = self->fps_d;
-  }
+  input_timestamp = GST_BUFFER_TIMESTAMP (buf);
+  input_duration = GST_BUFFER_DURATION (buf);
 
   feed_textbuf (self, buf);
 
@@ -1537,8 +1551,16 @@ handle_buffer (GstSubParse * self, GstBuffer * buf)
         /* copy terminating NUL character as well */
         memcpy (GST_BUFFER_DATA (buf), subtitle, subtitle_len + 1);
         GST_BUFFER_SIZE (buf) = subtitle_len;
-        GST_BUFFER_TIMESTAMP (buf) = self->state.start_time;
-        GST_BUFFER_DURATION (buf) = self->state.duration;
+
+        if (self->parser_type == GST_SUB_PARSE_FORMAT_SUBRIP_MUXED) {
+          /* For muxed subrip output buffer timestamps are going to be the ones
+           * from input buffer */
+          GST_BUFFER_DURATION (buf) = input_duration;
+          GST_BUFFER_TIMESTAMP (buf) = input_timestamp;
+        } else {
+          GST_BUFFER_TIMESTAMP (buf) = self->state.start_time;
+          GST_BUFFER_DURATION (buf) = self->state.duration;
+        }
 
         /* in some cases (e.g. tmplayer) we can only determine the duration
          * of a text chunk from the timestamp of the next text chunk; in those
@@ -1584,6 +1606,57 @@ gst_sub_parse_chain (GstPad * sinkpad, GstBuffer * buf)
   GstSubParse *self;
 
   self = GST_SUBPARSE (GST_PAD_PARENT (sinkpad));
+
+  if (self->first_buffer) {
+    GstCaps *caps;
+
+    self->detected_encoding =
+        detect_encoding ((gchar *) GST_BUFFER_DATA (buf),
+        GST_BUFFER_SIZE (buf));
+    self->first_buffer = FALSE;
+    self->state.fps_n = self->fps_n;
+    self->state.fps_d = self->fps_d;
+
+    caps = gst_pad_peer_get_caps_reffed (sinkpad);
+    if (caps) {
+      /* Here we try to detect subrip muxed into media container,
+       * if we detect it, then no further detection for formats
+       * is needed */
+      if (!gst_caps_is_empty (caps)) {
+        const GstStructure *s;
+
+        s = gst_caps_get_structure (caps, 0);
+
+        if (gst_structure_has_name (s, "text/x-subrip-muxed")) {
+          GstCaps *srccaps;
+          GstTagList *tags;
+
+          self->parser_type = GST_SUB_PARSE_FORMAT_SUBRIP_MUXED;
+          self->parse_line = parse_subrip_muxed;
+          self->subtitle_codec =
+              gst_sub_parse_get_format_description
+              (GST_SUB_PARSE_FORMAT_SUBRIP_MUXED);
+          parser_state_init (&self->state);
+
+          srccaps = gst_caps_new_simple ("text/x-pango-markup", NULL);
+          if (!gst_pad_set_caps (self->srcpad, srccaps)) {
+            gst_caps_unref (caps);
+            gst_caps_unref (srccaps);
+            return GST_FLOW_UNEXPECTED;
+          }
+          gst_caps_unref (srccaps);
+
+          tags = gst_tag_list_new ();
+          gst_tag_list_add (tags, GST_TAG_MERGE_APPEND, GST_TAG_SUBTITLE_CODEC,
+              self->subtitle_codec, NULL);
+          gst_element_found_tags_for_pad (GST_ELEMENT (self), self->srcpad,
+              tags);
+
+        }
+      }
+      gst_caps_unref (caps);
+    }
+  }
 
   /* Push newsegment if needed */
   if (self->need_segment) {
