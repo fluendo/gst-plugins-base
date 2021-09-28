@@ -246,6 +246,12 @@ gst_sub_parse_src_query (GstPad * pad, GstQuery * query)
 
   GST_DEBUG ("Handling %s query", GST_QUERY_TYPE_NAME (query));
 
+  if (self->parser_type == GST_SUB_PARSE_FORMAT_SUBRIP_MUXED) {
+    /* SUBRIP_MUXED comes from a demuxer, so we passthrough
+     * position and seeking queries */
+    goto passthrough_query;
+  }
+
   switch (GST_QUERY_TYPE (query)) {
     case GST_QUERY_POSITION:{
       GstFormat fmt;
@@ -281,6 +287,7 @@ gst_sub_parse_src_query (GstPad * pad, GstQuery * query)
       break;
     }
     default:
+    passthrough_query:
       ret = gst_pad_peer_query (self->sinkpad, query);
       break;
   }
@@ -297,6 +304,12 @@ gst_sub_parse_src_event (GstPad * pad, GstEvent * event)
   gboolean ret = FALSE;
 
   GST_DEBUG ("Handling %s event", GST_EVENT_TYPE_NAME (event));
+
+  if (self->parser_type == GST_SUB_PARSE_FORMAT_SUBRIP_MUXED) {
+    /* SUBRIP_MUXED comes from a demuxer, so we passthrough
+     * seeking event */
+    goto passthrough_event;
+  }
 
   switch (GST_EVENT_TYPE (event)) {
     case GST_EVENT_SEEK:
@@ -341,6 +354,7 @@ gst_sub_parse_src_event (GstPad * pad, GstEvent * event)
       break;
     }
     default:
+    passthrough_event:
       ret = gst_pad_event_default (pad, event);
       break;
   }
